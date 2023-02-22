@@ -4,6 +4,8 @@ import socialmedia.IllegalHandleException;
 import socialmedia.InvalidHandleException;
 import socialmedia.SocialMediaPlatform;
 
+//testing
+
 /**
  * A short program to illustrate an app testing some minimal functionality of a
  * concrete implementation of the SocialMediaPlatform interface -- note you will
