@@ -14,7 +14,7 @@ package socialmedia;
 public interface SocialMediaPlatform extends MiniSocialMediaPlatform {
 
 	// Account-related methods ****************************************
-
+	//testing github
 	/**
 	 * The method creates an account in the platform with the given handle and
 	 * description.
