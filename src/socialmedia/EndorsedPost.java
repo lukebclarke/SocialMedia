@@ -6,6 +6,7 @@ public class EndorsedPost extends Post {
         postObject.addEndorsement(this);
     }
 
+    @Override
     /**<p>DO NOT USE</p>
      * Overrides the existing superclass method, outputs a warning message to the console:
      * "The operation: 'addComment' cannot be performed on an endorsed post.\n
@@ -15,24 +16,29 @@ public class EndorsedPost extends Post {
         System.out.println("The operation: 'addComment' cannot be performed on an endorsed post.\noperation FAILED!");
     }
 
+    @Override
     /**<p>DO NOT USE</p>
      * Overrides the existing superclass method, outputs a warning message to the console:
      * "The operation: 'removeComment' cannot be performed on an endorsed post.\n
      *  operation FAILED!"
     */
     public void removeComment(Comment commentObject) {
-        System.out.println("The operation: 'removeComment' cannot be performed on an endorsed post.\noperation FAILED!");
+        System.out
+                .println("The operation: 'removeComment' cannot be performed on an endorsed post.\noperation FAILED!");
     }
 
+    @Override
     /**<p>DO NOT USE</p>
      * Overrides the existing superclass method, outputs a warning message to the console:
      * "The operation: 'addEndorsement' cannot be performed on an endorsed post.\n
      *  operation FAILED!"
     */
     public void addEndorsement(EndorsedPost endorsedPostObject) {
-        System.out.println("The operation: 'addEndorsement' cannot be performed on an endorsed post.\noperation FAILED!");
+        System.out
+                .println("The operation: 'addEndorsement' cannot be performed on an endorsed post.\noperation FAILED!");
     }
 
+    @Override
     /**<p>DO NOT USE</p>
      * Overrides the existing superclass method, outputs a warning message to the console:
      * "The operation: 'removeComment' cannot be performed on an endorsed post.\n
