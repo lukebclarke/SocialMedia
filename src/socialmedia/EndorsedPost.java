@@ -1,7 +1,7 @@
 package socialmedia;
 
 public class EndorsedPost extends Post {
-    public EndorsedPost(Account authorObject, Post postObject) {
+    public EndorsedPost(Account authorObject, Post postObject) throws InvalidPostException {
         super(authorObject, postObject.getMessage());
         postObject.addEndorsement(this);
     }

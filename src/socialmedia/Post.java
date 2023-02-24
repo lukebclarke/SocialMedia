@@ -19,9 +19,9 @@ public class Post {
      * 
      * 
     */
-    public Post(Account author, String message) {
+    public Post(Account author, String message) throws InvalidPostException{
         this.author = author;
-        this.message = message;
+        setMessage(message);
         
         //Increment and set the post id. (this means the id will start from 1)
         id++;
@@ -53,14 +53,16 @@ public class Post {
      * 
      * @outputs (String) if the message is greater than 100 characters long, a warning message is output to the console and the message is not set.
      */
-    public void setMessage(String newMessage) {
+    public void setMessage(String newMessage) throws InvalidPostException{
         //TODO 'up to 100 characters' means less than 100? or <= 100 ?
         if (message.length() < 100) {
             message = newMessage;
         }
+        else if (message.length() >= 100) {
+            throw new InvalidPostException("Post message contains: " + message.length() + " characters. Message can only contain up to 100 characters.");
+        }
         else {
-            System.out.println("WARNING! Message attribute not set!" +
-                                "new message length is: " + message.length() + ", but message length must be less than 100 characters.");
+            throw new InvalidPostException("Post message contains: 0 characters. The post message cannot be empty.");
         }
     }
 
