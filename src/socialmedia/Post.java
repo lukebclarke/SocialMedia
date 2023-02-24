@@ -96,7 +96,7 @@ public class Post {
      * 
      * @param endorsedPostObject The object of the post endorsement
     */
-    public void removeComment(EndorsedPost endorsedPostObject) {
+    public void removeEndorsement(EndorsedPost endorsedPostObject) {
         arrOfEndorsements.remove(endorsedPostObject);
     }
 
