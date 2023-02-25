@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 public class Post {
     // Instantiate attributes
-    Account author;
-    String message;
-    static int id;
-    ArrayList<Comment> arrOfComments;
-    ArrayList<EndorsedPost> arrOfEndorsements;
+    private Account author;
+    private String message;
+    private static int id;
+    private ArrayList<Comment> arrOfComments;
+    private ArrayList<EndorsedPost> arrOfEndorsements;
 
 
     /**<p>Creates a new instance of the Post class.</p>
