@@ -3,10 +3,9 @@ package socialmedia;
 import java.util.ArrayList;
 
 public class Post {
-    // Instantiate attributes
     private Account author;
     private String message;
-    private static int id;
+    private static int postID;
     private ArrayList<Comment> arrOfComments;
     private ArrayList<EndorsedPost> arrOfEndorsements;
 
@@ -16,15 +15,15 @@ public class Post {
      * Parameters:
      * handle (String): The handle of the user posting the post
      * message (String): The message to post
-     * 
-     * 
     */
     public Post(Account author, String message) throws InvalidPostException{
         this.author = author;
         setMessage(message);
+        author.addPost(this); //Add the post to the list of posts created by the author
         
         //Increment and set the post id. (this means the id will start from 1)
-        id++;
+        //TODO: if the id somehow reaches 2147483648 the program will crash
+        postID++;
     }
 
     public Account getAuthor() {
@@ -36,7 +35,7 @@ public class Post {
     }
 
     public int getId() {
-        return id;
+        return postID;
     }
 
     public ArrayList<Comment> getArrayOfComments() {
@@ -55,50 +54,34 @@ public class Post {
      */
     public void setMessage(String newMessage) throws InvalidPostException{
         //TODO 'up to 100 characters' means less than 100? or <= 100 ?
-        if (message.length() < 100) {
+        if (newMessage.length() < 100) {
             message = newMessage;
         }
-        else if (message.length() >= 100) {
-            throw new InvalidPostException("Post message contains: " + message.length() + " characters. Message can only contain up to 100 characters.");
+        else if (newMessage.length() >= 100) {
+            throw new InvalidPostException("Post message contains: " + newMessage.length() + " characters. Message can only contain up to 100 characters.");
         }
         else {
             throw new InvalidPostException("Post message contains: 0 characters. The post message cannot be empty.");
         }
     }
 
-    public void setId(int newId) {
-        id = newId;
+    public void setPostId(int newPostId) {
+        postID = newPostId;
     }
 
-    /**Adds a comment object to the post
-     * 
-     * @param commentObject The object of the comment to remove
-    */
     public void addComment(Comment commentObject) {
         arrOfComments.add(commentObject);
     }
 
-    /**Removes a comment object from the post
-     * 
-     * @param commentObject The object of the comment to remove
-    */
     public void removeComment(Comment commentObject) {
         arrOfComments.remove(commentObject);
     }
 
-    /**Adds a EndorsedPost object to the post
-     * 
-     * @param endorsedPostObject The object of the post endorsement
-    */
-    public void addEndorsement(EndorsedPost endorsedPostObject) {
+    public void addEndorsedPost(EndorsedPost endorsedPostObject) {
         arrOfEndorsements.add(endorsedPostObject);
     }
 
-    /**Removes a EndorsedPost object from the post
-     * 
-     * @param endorsedPostObject The object of the post endorsement
-    */
-    public void removeEndorsement(EndorsedPost endorsedPostObject) {
+    public void removeEndorsedPost(EndorsedPost endorsedPostObject) {
         arrOfEndorsements.remove(endorsedPostObject);
     }
 
