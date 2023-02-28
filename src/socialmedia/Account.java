@@ -1,12 +1,14 @@
 package socialmedia;
 
-//import java.util.ArrayList;
+import java.util.ArrayList;
 
 public class Account {
     private int accountID;
     private String handle;
     private String description;
-    //private ArrayList<Post> Posts; //used to track which posts the author has for easy deletion (not sure if needed - TODO: double check)
+    private ArrayList<Post> Posts; //used to track which posts the author has for easy deletion (not sure if needed - TODO: double check)
+
+    //TODO: write constructor method
 
     public int getAccountID() {
         return accountID;
@@ -30,6 +32,10 @@ public class Account {
 
     public void setDescription(String newDescription) {
         description = newDescription;
+    }
+
+    public void addPost(Post postObject) {
+        Posts.add(postObject);
     }
 
     //TODO: write function to delete account/all posts
