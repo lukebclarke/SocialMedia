@@ -42,6 +42,10 @@ public class Post {
         return arrOfComments;
     }
 
+    public int getNumberOfEndorsements() {
+        return arrOfEndorsements.size();
+    }
+
     public void setHandle(Account newAuthor) {
         author = newAuthor;
     }
