@@ -125,7 +125,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public int getMostEndorsedAccount() {
-		// TODO Auto-generated method stub (Ollie)
+		// TODO Auto-generated method stub (Luke)
 		return 0;
 	}
 
