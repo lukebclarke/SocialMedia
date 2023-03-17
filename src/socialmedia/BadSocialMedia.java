@@ -13,119 +13,119 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public int createAccount(String handle) throws IllegalHandleException, InvalidHandleException {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub (Luke)
 		return 0;
 	}
 
 	@Override
 	public int createAccount(String handle, String description) throws IllegalHandleException, InvalidHandleException {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub (Luke)
 		return 0;
 	}
 
 	@Override
 	public void removeAccount(int id) throws AccountIDNotRecognisedException {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub (Luke)
 
 	}
 
 	@Override
 	public void removeAccount(String handle) throws HandleNotRecognisedException {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub (Luke)
 
 	}
 
 	@Override
 	public void changeAccountHandle(String oldHandle, String newHandle)
 			throws HandleNotRecognisedException, IllegalHandleException, InvalidHandleException {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub (Luke)
 
 	}
 
 	@Override
 	public void updateAccountDescription(String handle, String description) throws HandleNotRecognisedException {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub (Luke)
 
 	}
 
 	@Override
 	public String showAccount(String handle) throws HandleNotRecognisedException {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub (Luke)
 		return null;
 	}
 
 	@Override
 	public int createPost(String handle, String message) throws HandleNotRecognisedException, InvalidPostException {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub (Ollie)
 		return 0;
 	}
 
 	@Override
 	public int endorsePost(String handle, int id)
 			throws HandleNotRecognisedException, PostIDNotRecognisedException, NotActionablePostException {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub (Ollie)
 		return 0;
 	}
 
 	@Override
 	public int commentPost(String handle, int id, String message) throws HandleNotRecognisedException,
 			PostIDNotRecognisedException, NotActionablePostException, InvalidPostException {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub (Ollie)
 		return 0;
 	}
 
 	@Override
 	public void deletePost(int id) throws PostIDNotRecognisedException {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub (Ollie)
 
 	}
 
 	@Override
 	public String showIndividualPost(int id) throws PostIDNotRecognisedException {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub (Ollie)
 		return null;
 	}
 
 	@Override
 	public StringBuilder showPostChildrenDetails(int id)
 			throws PostIDNotRecognisedException, NotActionablePostException {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub (Ollie)
 		return null;
 	}
 
 	@Override
 	public int getNumberOfAccounts() {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub (Luke)
 		return 0;
 	}
 
 	@Override
 	public int getTotalOriginalPosts() {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub (Ollie)
 		return 0;
 	}
 
 	@Override
 	public int getTotalEndorsmentPosts() {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub (Ollie)
 		return 0;
 	}
 
 	@Override
 	public int getTotalCommentPosts() {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub (Ollie)
 		return 0;
 	}
 
 	@Override
 	public int getMostEndorsedPost() {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub (Ollie)
 		return 0;
 	}
 
 	@Override
 	public int getMostEndorsedAccount() {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub (Ollie)
 		return 0;
 	}
 
