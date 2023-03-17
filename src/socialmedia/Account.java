@@ -8,7 +8,12 @@ public class Account {
     private String description;
     private ArrayList<Post> Posts; //used to track which posts the author has for easy deletion (not sure if needed - TODO: double check)
 
-    //TODO: write constructor method
+    public Account(int ID, String Username, String bio)
+    {
+        accountID = ID;
+        handle = Username;
+        description = bio;
+    }
 
     public int getAccountID() {
         return accountID;
