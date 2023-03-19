@@ -14,7 +14,7 @@ public class Account {
         this.accountID = ID;
         this.handle = Username;
         this.description = bio;
-        this.nummEndorsements = 0;
+        this.numEndorsements = 0;
     }
 
     public int getAccountID() {

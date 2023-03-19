@@ -1,6 +1,7 @@
 package socialmedia;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * BadSocialMedia is a minimally compiling, but non-functioning implementor of
@@ -17,40 +18,44 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public int createAccount(String handle) throws IllegalHandleException, InvalidHandleException {
-		Account account = new Account(numAccounts, handle, "");
+		int accountID = platform.getActiveAccounts().size() + platform.getDeactivatedAccounts().size(); //generates unique accountID
+		
+		platform.addActiveAccount(new Account(accountID, handle, ""));
 
-		return account;
+		return accountID;
 	}
 
 	@Override
 	public int createAccount(String handle, String description) throws IllegalHandleException, InvalidHandleException {
-		Account account = new Account(numAccounts, handle, description);
+		int accountID = platform.getActiveAccounts().size() + platform.getDeactivatedAccounts().size(); //generates unique accountID
+		
+		platform.addActiveAccount(new Account(accountID, handle, ""));
 
-		return account;
+		return accountID;
 	}
 
 	@Override
 	public void removeAccount(int id) throws AccountIDNotRecognisedException {
-		ArrayList<Account> accounts = platform.getActiveAccounts();
+		List<Account> accounts = platform.getActiveAccounts();
 
 		for (Account account : accounts)
 		{
 			if (account.getAccountID() == id) //iterates through all accounts until the desired account is found
 			{
-				account.deleteAccount();
+				account.deleteAccount(platform);
 			}
 		}
 	}
 
 	@Override
 	public void removeAccount(String handle) throws HandleNotRecognisedException {
-		ArrayList<Account> accounts = platform.getActiveAccounts();
+		List<Account> accounts = platform.getActiveAccounts();
 
 		for (Account account : accounts)
 		{
-			if (account.getAccountID() == handle) //iterates through all accounts until the desired account is found
+			if (account.getDescription() == handle) //iterates through all accounts until the desired account is found
 			{
-				account.deleteAccount();
+				account.deleteAccount(platform);
 			}
 		}
 	}
@@ -59,11 +64,11 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	public void changeAccountHandle(String oldHandle, String newHandle)
 			throws HandleNotRecognisedException, IllegalHandleException, InvalidHandleException {
 		
-		ArrayList<Account> accounts = platform.getActiveAccounts();
+		List<Account> accounts = platform.getActiveAccounts();
 
 		for (Account account : accounts)
 		{
-			if (account.getAccountID() == oldHandle) //iterates through all accounts until the desired account is found
+			if (account.getHandle() == oldHandle) //iterates through all accounts until the desired account is found
 			{
 				account.setHandle(newHandle);
 			}
@@ -72,11 +77,11 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public void updateAccountDescription(String handle, String description) throws HandleNotRecognisedException {
-		ArrayList<Account> accounts = platform.getActiveAccounts();
+		List<Account> accounts = platform.getActiveAccounts();
 
 		for (Account account : accounts)
 		{
-			if (account.getAccountID() == handle) //iterates through all accounts until the desired account is found
+			if (account.getHandle() == handle) //iterates through all accounts until the desired account is found
 			{
 				account.setDescription(description);
 			}
@@ -130,7 +135,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public int getNumberOfAccounts() {
-		accounts = platform.getActiveAccounts();
+		List<Account> accounts = platform.getActiveAccounts();
 
 		return accounts.size();
 	}
@@ -166,7 +171,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 		Account mostEndorsedAccount = null;
 		int numEndorsementsOfMaxAccount = 0;
 
-		ArrayList<Account> accounts = platform.getActiveAccounts();
+		List<Account> accounts = platform.getActiveAccounts();
 
 		for (Account account : accounts)
 		{
@@ -176,7 +181,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 			}
 		}
 
-		return mostEndorsedAccount;
+		return mostEndorsedAccount.getAccountID();
 	}
 
 	@Override
