@@ -65,4 +65,10 @@ public class Platform {
     // TODO: use this class when adding new accounts, new posts, comments,
     // endorsements etc.
 
+    //TEMP: REMOVING FROM ACTIVE ACCOUNT (DUNNO IF THERE IS BETTER WAY TO DO THIS AGAIN CAUSE I DUNNO WHY THIS METHOD ISNT INCLUDED IN THE FIRST PLACE)
+    public void removeActiveAccounts(Account account)
+    {
+        activeAccountsArr.remove(account)
+    }
+
 }

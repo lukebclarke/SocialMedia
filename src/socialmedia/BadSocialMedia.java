@@ -11,46 +11,81 @@ import java.io.IOException;
  */
 public class BadSocialMedia implements SocialMediaPlatform {
 
+	private Platform platform = new Platform();
+
+	//LUKE TODO: what do the throw exceptions do, do i have to code that
+
 	@Override
 	public int createAccount(String handle) throws IllegalHandleException, InvalidHandleException {
-		// TODO Auto-generated method stub (Luke)
-		return 0;
+		Account account = new Account(numAccounts, handle, "");
+
+		return account;
 	}
 
 	@Override
 	public int createAccount(String handle, String description) throws IllegalHandleException, InvalidHandleException {
-		// TODO Auto-generated method stub (Luke)
-		return 0;
+		Account account = new Account(numAccounts, handle, description);
+
+		return account;
 	}
 
 	@Override
 	public void removeAccount(int id) throws AccountIDNotRecognisedException {
-		// TODO Auto-generated method stub (Luke)
+		ArrayList<Account> accounts = platform.getActiveAccounts();
 
+		for (Account account : accounts)
+		{
+			if (account.getAccountID() == id) //iterates through all accounts until the desired account is found
+			{
+				account.deleteAccount();
+			}
+		}
 	}
 
 	@Override
 	public void removeAccount(String handle) throws HandleNotRecognisedException {
-		// TODO Auto-generated method stub (Luke)
+		ArrayList<Account> accounts = platform.getActiveAccounts();
 
+		for (Account account : accounts)
+		{
+			if (account.getAccountID() == handle) //iterates through all accounts until the desired account is found
+			{
+				account.deleteAccount();
+			}
+		}
 	}
 
 	@Override
 	public void changeAccountHandle(String oldHandle, String newHandle)
 			throws HandleNotRecognisedException, IllegalHandleException, InvalidHandleException {
-		// TODO Auto-generated method stub (Luke)
+		
+		ArrayList<Account> accounts = platform.getActiveAccounts();
 
+		for (Account account : accounts)
+		{
+			if (account.getAccountID() == oldHandle) //iterates through all accounts until the desired account is found
+			{
+				account.setHandle(newHandle);
+			}
+		}
 	}
 
 	@Override
 	public void updateAccountDescription(String handle, String description) throws HandleNotRecognisedException {
-		// TODO Auto-generated method stub (Luke)
+		ArrayList<Account> accounts = platform.getActiveAccounts();
 
+		for (Account account : accounts)
+		{
+			if (account.getAccountID() == handle) //iterates through all accounts until the desired account is found
+			{
+				account.setDescription(description);
+			}
+		}
 	}
 
 	@Override
 	public String showAccount(String handle) throws HandleNotRecognisedException {
-		// TODO Auto-generated method stub (Luke)
+		// TODO decide what this does
 		return null;
 	}
 
@@ -95,8 +130,9 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public int getNumberOfAccounts() {
-		// TODO Auto-generated method stub (Luke)
-		return 0;
+		accounts = platform.getActiveAccounts();
+
+		return accounts.size();
 	}
 
 	@Override
@@ -125,8 +161,22 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public int getMostEndorsedAccount() {
-		// TODO Auto-generated method stub (Luke)
-		return 0;
+		//TODO: Do we have to make work when multiple accounts have the same endorsement num?
+
+		Account mostEndorsedAccount = null;
+		int numEndorsementsOfMaxAccount = 0;
+
+		ArrayList<Account> accounts = platform.getActiveAccounts();
+
+		for (Account account : accounts)
+		{
+			if (account.getEndorsements() >= numEndorsementsOfMaxAccount)
+			{
+				mostEndorsedAccount = account;
+			}
+		}
+
+		return mostEndorsedAccount;
 	}
 
 	@Override
