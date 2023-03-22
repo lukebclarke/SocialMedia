@@ -89,5 +89,10 @@ public class Post {
         arrOfEndorsements.remove(endorsedPostObject);
     }
 
+    //luke TODO: decide what this function actually does and finish writing it
+    public void deletePost()
+    {
+        author.removePost(this);
+    }
 
 }
