@@ -34,6 +34,8 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	//TODO: the platform class shouldnt be used i think which breaks a lot of your code :( this is my fault but i will explain and we
 	//can fix it, unless it works for yours then i can probably change my code to use it maybe i was just being dumb when i made that class
 	// because i didnt realise this file was a class.
+
+	//TODO: (ollie) most things require postobject to be passed as param but sometimes comment and endorsed post objects are passed instead which will probably break the code
 	@Override
 	public int createAccount(String handle) throws IllegalHandleException, InvalidHandleException {
 		int accountID = platform.getActiveAccounts().size() + platform.getDeactivatedAccounts().size(); // generates
