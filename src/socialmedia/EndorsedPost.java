@@ -2,7 +2,11 @@ package socialmedia;
 
 public class EndorsedPost extends Post {
     public EndorsedPost(Account authorObject, Post postObject) throws InvalidPostException {
+        //Call Post constructor
         super(authorObject, postObject.getMessage());
+
+        //Change the post message to include handle of user to endorse
+        addEndorsementHandle(authorObject.getHandle());
         postObject.addEndorsedPost(this);
     }
 
@@ -13,7 +17,7 @@ public class EndorsedPost extends Post {
      *  operation FAILED!"
     */
     public void addComment(Comment commentObject) {
-        System.out.println("The operation: 'addComment' cannot be performed on an endorsed post.\noperation FAILED!");
+        //System.out.println("The operation: 'addComment' cannot be performed on an endorsed post.\noperation FAILED!");
     }
 
     @Override
@@ -23,8 +27,7 @@ public class EndorsedPost extends Post {
      *  operation FAILED!"
     */
     public void removeComment(Comment commentObject) {
-        System.out
-                .println("The operation: 'removeComment' cannot be performed on an endorsed post.\noperation FAILED!");
+        //System.out.println("The operation: 'removeComment' cannot be performed on an endorsed post.\noperation FAILED!");
     }
 
     @Override
@@ -34,8 +37,7 @@ public class EndorsedPost extends Post {
      *  operation FAILED!"
     */
     public void addEndorsedPost(EndorsedPost endorsedPostObject) {
-        System.out
-                .println("The operation: 'addEndorsement' cannot be performed on an endorsed post.\noperation FAILED!");
+        //System.out.println("The operation: 'addEndorsement' cannot be performed on an endorsed post.\noperation FAILED!");
     }
 
     @Override
@@ -45,8 +47,7 @@ public class EndorsedPost extends Post {
      *  operation FAILED!"
     */
     public void removeEndorsedPost(EndorsedPost endorsedPostObject) {
-        System.out.println(
-                "The operation: 'removeEndorsedPost' cannot be performed on an endorsed post.\noperation FAILED!");
+        //System.out.println("The operation: 'removeEndorsedPost' cannot be performed on an endorsed post.\noperation FAILED!");
     }
 
     
