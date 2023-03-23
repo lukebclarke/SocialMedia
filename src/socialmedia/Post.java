@@ -104,5 +104,7 @@ public class Post {
         arrOfEndorsements.remove(endorsedPostObject);
     }
 
-
+    public void addEndorseeHandleToMessage(String endorseeHandle) {
+        this.message = "EP@" + endorseeHandle + ": " + this.getMessage(); 
+    }
 }

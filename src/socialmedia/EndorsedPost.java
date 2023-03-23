@@ -6,7 +6,7 @@ public class EndorsedPost extends Post {
         super(authorObject, postObject.getMessage());
 
         //Change the post message to include handle of user to endorse
-        addEndorsementHandle(authorObject.getHandle());
+        addEndorseeHandleToMessage(authorObject.getHandle());
         postObject.addEndorsedPost(this);
     }
 
@@ -50,6 +50,5 @@ public class EndorsedPost extends Post {
         //System.out.println("The operation: 'removeEndorsedPost' cannot be performed on an endorsed post.\noperation FAILED!");
     }
 
-    
     //TODO better implementation of removing the ability to endorse and comment on posts
 }
