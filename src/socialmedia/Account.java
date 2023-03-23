@@ -53,7 +53,8 @@ public class Account {
     {
         for (Post post : Posts)
         {
-            post.deletePost();
+            //TODO: (luke) i delete the posts in the BadSocialMedia file, you need to write this same thing but in that file instead.
+            //post.deletePost();
         }
 
         platform.addDeactivatedAccount(this);
