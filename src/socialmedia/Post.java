@@ -104,12 +104,5 @@ public class Post {
         arrOfEndorsements.remove(endorsedPostObject);
     }
 
-    public void addEndorsementHandle(String handle) {
-        //Only set if the post is not an empty post
-        if (author != null) {
-            this.message = "EP@" + handle + ": " + this.message;
-        }
-    }
-
 
 }

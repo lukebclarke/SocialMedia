@@ -45,6 +45,10 @@ public class Account {
         Posts.add(postObject);
     }
 
+    public void removePost(Post postObject) {
+        Posts.remove(postObject);
+    }
+
     public void deleteAccount(Platform platform)
     {
         for (Post post : Posts)
