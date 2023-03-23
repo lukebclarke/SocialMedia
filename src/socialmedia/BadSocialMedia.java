@@ -24,12 +24,22 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	private Platform platform = new Platform();
 
-	//LUKE TODO: what do the throw exceptions do, do i have to code that
+	// LUKE TODO: what do the throw exceptions do, do i have to code that
+	// Yes, easier to explain it in person but you can also look at my code, you
+	// kind of put a message into one of the functions when there is an "error" like
+	// if the handle has to be less than 10 characters long but the handle is 20
+	// characters long it should throw an exception. (like the except block of try:
+	// except: in python)
 
+	//TODO: the platform class shouldnt be used i think which breaks a lot of your code :( this is my fault but i will explain and we
+	//can fix it, unless it works for yours then i can probably change my code to use it maybe i was just being dumb when i made that class
+	// because i didnt realise this file was a class.
 	@Override
 	public int createAccount(String handle) throws IllegalHandleException, InvalidHandleException {
-		int accountID = platform.getActiveAccounts().size() + platform.getDeactivatedAccounts().size(); //generates unique accountID
-		
+		int accountID = platform.getActiveAccounts().size() + platform.getDeactivatedAccounts().size(); // generates
+																										// unique
+																										// accountID
+
 		platform.addActiveAccount(new Account(accountID, handle, ""));
 
 		return accountID;
@@ -37,8 +47,10 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public int createAccount(String handle, String description) throws IllegalHandleException, InvalidHandleException {
-		int accountID = platform.getActiveAccounts().size() + platform.getDeactivatedAccounts().size(); //generates unique accountID
-		
+		int accountID = platform.getActiveAccounts().size() + platform.getDeactivatedAccounts().size(); // generates
+																										// unique
+																										// accountID
+
 		platform.addActiveAccount(new Account(accountID, handle, ""));
 
 		return accountID;
@@ -48,9 +60,8 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	public void removeAccount(int id) throws AccountIDNotRecognisedException {
 		List<Account> accounts = platform.getActiveAccounts();
 
-		for (Account account : accounts)
-		{
-			if (account.getAccountID() == id) //iterates through all accounts until the desired account is found
+		for (Account account : accounts) {
+			if (account.getAccountID() == id) // iterates through all accounts until the desired account is found
 			{
 				account.deleteAccount(platform);
 			}
@@ -61,9 +72,8 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	public void removeAccount(String handle) throws HandleNotRecognisedException {
 		List<Account> accounts = platform.getActiveAccounts();
 
-		for (Account account : accounts)
-		{
-			if (account.getDescription() == handle) //iterates through all accounts until the desired account is found
+		for (Account account : accounts) {
+			if (account.getDescription() == handle) // iterates through all accounts until the desired account is found
 			{
 				account.deleteAccount(platform);
 			}
@@ -73,12 +83,11 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	@Override
 	public void changeAccountHandle(String oldHandle, String newHandle)
 			throws HandleNotRecognisedException, IllegalHandleException, InvalidHandleException {
-		
+
 		List<Account> accounts = platform.getActiveAccounts();
 
-		for (Account account : accounts)
-		{
-			if (account.getHandle() == oldHandle) //iterates through all accounts until the desired account is found
+		for (Account account : accounts) {
+			if (account.getHandle() == oldHandle) // iterates through all accounts until the desired account is found
 			{
 				account.setHandle(newHandle);
 			}
@@ -89,9 +98,8 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	public void updateAccountDescription(String handle, String description) throws HandleNotRecognisedException {
 		List<Account> accounts = platform.getActiveAccounts();
 
-		for (Account account : accounts)
-		{
-			if (account.getHandle() == handle) //iterates through all accounts until the desired account is found
+		for (Account account : accounts) {
+			if (account.getHandle() == handle) // iterates through all accounts until the desired account is found
 			{
 				account.setDescription(description);
 			}
@@ -101,36 +109,64 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	@Override
 	public String showAccount(String handle) throws HandleNotRecognisedException {
 		// TODO decide what this does
+		// (luke) hover over showAccount() function - it shows what this should look
+		// like :)
 		return null;
 	}
 
-	@Override
-	public int createPost(String handle, String message) throws HandleNotRecognisedException, InvalidPostException {
-		// Ollie
-		// Check if post message is of the correct length
+	/**
+	 * @param message the message to be contained within a post
+	 * @return true if the message is of the correct length
+	 * @throws InvalidPostException if the message length is greater than or equal
+	 *                              to 100 characters
+	 */
+	private boolean isMessageOfCorrectLength(String message) throws InvalidPostException {
 		// TODO 'up to 100 characters' means less than 100? or <= 100 ?
 		// TODO: does the 100 characters include the handle? I assumed not.
+		// TODO: never returns false.
 		if (message.length() >= 100) {
 			throw new InvalidPostException("Post message contains: " + message.length()
 					+ " characters. Message can only contain up to 100 characters.");
 		} else if (message.length() == 0) {
 			throw new InvalidPostException("Post message contains: 0 characters. The post message cannot be empty.");
 		}
+		return true;
+	}
 
-		// Search through all accounts until the account with given handle is found.
-		Account author = null;
-		for (int i = 0; i < handle.length(); i++) {
-			String handleToCheck = this.arrOfAccounts.get(i).getHandle();
+	/**
+	 * This method is used to return the object of an account with a given handle.
+	 * If no account with that handle is found,
+	 * 
+	 * @param handle handle to identify an account
+	 * @return the object relating to the account handle. Returns null if no account
+	 *         handle with the given handle was found.
+	 * @throws
+	 */
+	private Account getAccountObject(String handle) throws HandleNotRecognisedException {
+		Account accountObject = null;
+		for (Account authorToCheck : arrOfAccounts) {
+			String handleToCheck = authorToCheck.getHandle();
 			if (handleToCheck == handle) {
-				author = this.arrOfAccounts.get(i);
-				break;
+				accountObject = authorToCheck;
+				break; // Searching is no longer needed.
 			}
 		}
 
-		// Check if the account handle given was valid
-		if (author == null) {
+		// Check if the account handle given was valid by checking if an Account with
+		// that handle was found.
+		if (accountObject == null) {
 			throw new HandleNotRecognisedException("Handle: " + handle + " is not valid.");
 		}
+
+		return accountObject;
+	}
+
+	@Override
+	public int createPost(String handle, String message) throws HandleNotRecognisedException, InvalidPostException {
+		// Ollie
+		boolean isMessageCorrectLength = isMessageOfCorrectLength(message);
+
+		Account author = getAccountObject(handle);
 
 		// create post object and append to arr of posts
 		Post postObject = new Post(author, message);
@@ -139,102 +175,154 @@ public class BadSocialMedia implements SocialMediaPlatform {
 		return postObject.getId();
 	}
 
+	/**
+	 * Checks if a post Id relates to a standard post.
+	 * 
+	 * @param postID The id of the post to check
+	 * @return The object of the representing post if ID is a standard post.
+	 *         Otherwise returns null.
+	 */
+	private Post searchForPost(int postID) {
+		Post postObject = null;
+		for (Post post : this.arrOfPosts) {
+			int idToCheck = post.getId();
+
+			if (idToCheck == postID) {
+				postObject = post;
+				break; // Stop searching for the post.
+			}
+		}
+
+		return postObject;
+	}
+
+	/**
+	 * Checks if a post Id relates to a comment post.
+	 * 
+	 * @param commentID The id of the post to check
+	 * @return The object of the representing post if ID is a comment post.
+	 *         Otherwise returns null.
+	 */
+	private Comment searchForComment(int commentID) {
+		Comment commentObject = null;
+		for (Comment comment : this.arrOfComments) {
+			int idToCheck = comment.getId();
+
+			if (idToCheck == commentID) {
+				commentObject = comment;
+				break; // Stop searching for the post.
+			}
+		}
+
+		return commentObject;
+	}
+
+	/**
+	 * Checks if a post ID relates to an endorsed post
+	 * 
+	 * @param endorsedPostID The ID of the post to check
+	 * @return The object of the representing post if ID is an endorsed post.
+	 *         Otherwise returns null.
+	 */
+	private EndorsedPost searchForEndorsedPost(int endorsedPostID) {
+		EndorsedPost endorsedPostObject = null;
+		for (EndorsedPost endorsedPost : this.arrOfEndorsedPosts) {
+			int idToCheck = endorsedPost.getId();
+
+			if (idToCheck == endorsedPostID) {
+				endorsedPostObject = endorsedPost;
+				break; // Stop searching for the post.
+			}
+		}
+
+		return endorsedPostObject;
+	}
+
+	/**
+	 * Returns whether the post with a given ID is an empty post. (a post that has
+	 * been deleted)
+	 * 
+	 * @param postID the ID of the post to check if it is empty
+	 * @return true if the post is empty, false otherwise.
+	 */
+	private boolean isPostEmpty(int postID) {
+		// TODO: (ollie) make more readable
+		Post postObject = searchForPost(postID);
+
+		if (postObject == null) {
+			Comment commentObject = searchForComment(postID);
+
+			if (commentObject == null) {
+				EndorsedPost endorsedPostObject = searchForEndorsedPost(postID);
+
+				if (endorsedPostObject != null) {
+					return endorsedPostObject.isEmptyPost();
+				}
+			} else {
+				return commentObject.isEmptyPost();
+			}
+		} else {
+			return postObject.isEmptyPost();
+		}
+
+		return false;
+	}
+
 	@Override
 	public int endorsePost(String handle, int id)
-			throws HandleNotRecognisedException, PostIDNotRecognisedException, NotActionablePostException {
+			throws HandleNotRecognisedException, PostIDNotRecognisedException, NotActionablePostException,
+			InvalidPostException {
 		// (Ollie)
-		// Search through all accounts until the account with given handle is found.
-		Account authorObject = null;
-		for (int i = 0; i < handle.length(); i++) {
-			String handleToCheck = this.arrOfAccounts.get(i).getHandle();
-			if (handleToCheck == handle) {
-				authorObject = this.arrOfAccounts.get(i);
-				break;
-			}
-		}
-
-		// Check if the account handle given was valid
-		if (authorObject == null) {
-			throw new HandleNotRecognisedException("Handle: " + handle + " is not valid.");
-		}
+		Account authorObject = getAccountObject(handle);
 
 		// Search through all posts until the post with the given ID is found
-		Post postObject = null;
-		for (int i = 0; i < arrOfPosts.size(); i++) {
-			int idToCheck = this.arrOfPosts.get(i).getId();
-			if (idToCheck == id) {
-				postObject = this.arrOfPosts.get(i);
-				break;
-			}
+		Post postObject = searchForPost(id);
+
+		// If a post with the given ID is not found, search for the id in comments
+		Comment commentObject = null;
+		if (authorObject == null) {
+			commentObject = searchForComment(id);
 		}
 
-		// If a post with given ID is not found, search through all comments until the
-		// post width given id is found.
-		if (postObject == null) {
-			for (int i = 0; i < arrOfComments.size(); i++) {
-				int idToCheck = this.arrOfComments.get(i).getId();
-				if (idToCheck == id) {
-					postObject = this.arrOfComments.get(i);
-					break;
-				}
-			}
-
-		}
-
-		// If a post with given ID is not found, search through all endorsed posts until
-		// the post width given id is found.
-		if (postObject == null) {
-			for (int i = 0; i < arrOfEndorsedPosts.size(); i++) {
-				int idToCheck = this.arrOfEndorsedPosts.get(i).getId();
-				if (idToCheck == id) {
-					postObject = this.arrOfEndorsedPosts.get(i);
-					break;
-				}
-			}
+		// If a comment with the given ID is not found, search for the id in endorsed
+		// posts.
+		EndorsedPost endorsedPostObject = null;
+		if (authorObject == null && commentObject == null) {
+			endorsedPostObject = searchForEndorsedPost(id);
 
 			// Throw exception if an endorsed post with the given id was found.
-			if (postObject != null) {
+			if (endorsedPostObject != null) {
 				throw new NotActionablePostException(
 						"You cannot endorse an endorsed post. ID of post you tried to endorse: " + id);
 			}
 		}
 
-		// If a post with given ID is not found, search through all empty posts until
-		// the post width given id is found.
-		if (postObject != null) {
-			boolean isAnEmptyPost = false;
-			for (int i = 0; i < arrOfEmptyPosts.size(); i++) {
-				int idToCheck = this.arrOfEmptyPosts.get(i).getId();
-				if (idToCheck == id) {
-					isAnEmptyPost = true;
-					break;
-				}
-			}
-
-			// Throw exception if an endorsed post with the given id was found.
-			if (isAnEmptyPost) {
-				throw new NotActionablePostException("You cannot endorse an empty post.");
-			}
-		}
-
 		// Throw exception if no post with the given id was found
-		if (postObject == null) {
+		if (postObject == null && commentObject == null && endorsedPostObject == null) {
 			throw new PostIDNotRecognisedException("The post with ID: " + id + " was not found.");
 		}
 
-		// create post object and append to arr of posts
-		// Try catch and null used because badsocialmedia thought i do not handle
-		// TODO: make sure this works as i intended it to.
-		EndorsedPost endorsedPostObject = null;
-		try {
-			endorsedPostObject = new EndorsedPost(authorObject, postObject);
-		} catch (InvalidPostException e) {
-			// TODO: this may not work as expected, needs to throw exception in Post.java
-			e.printStackTrace();
+		// If a post with given ID is found, check that the post is not an empty post.
+		// Throw exception if the corresponding ID is to an empty post.
+		// TODO: (ollie) this isnt done in the most efficient way but should work.
+		if (isPostEmpty(id)) {
+			throw new NotActionablePostException("You cannot endorse an empty post.");
 		}
+
+		// create an endorsed post object and append to arr of posts
+		if (authorObject != null) {
+			endorsedPostObject = new EndorsedPost(authorObject, postObject);
+		}
+		if (commentObject != null) {
+			endorsedPostObject = new EndorsedPost(authorObject, commentObject);
+		}
+
 		this.arrOfEndorsedPosts.add(endorsedPostObject);
-		postObject.addEndorsedPost(endorsedPostObject);
-		authorObject.addPost(endorsedPostObject); // TODO: check the author doesnt need individual arrays
+		authorObject.addPost(endorsedPostObject); // TODO: (Luke??) check the author doesnt need individual arrays (this
+													// will be fixed if you use the arrays as i do) The way it is
+													// currently set up in your class cannot work as your class only
+													// accepts 1 type, whereas 3 post types are used (and 4 arrays are
+													// needed)
 
 		return endorsedPostObject.getId();
 	}
@@ -243,99 +331,48 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	public int commentPost(String handle, int id, String message) throws HandleNotRecognisedException,
 			PostIDNotRecognisedException, NotActionablePostException, InvalidPostException {
 		// (Ollie)
-		// Search through all accounts until the account with given handle is found.
-		Account authorObject = null;
-		for (int i = 0; i < handle.length(); i++) {
-			String handleToCheck = this.arrOfAccounts.get(i).getHandle();
-			if (handleToCheck == handle) {
-				authorObject = this.arrOfAccounts.get(i);
-				break;
-			}
-		}
+		Account authorObject = getAccountObject(handle);
 
-		// Check if the account handle given was valid
-		if (authorObject == null) {
-			throw new HandleNotRecognisedException("Handle: " + handle + " is not valid.");
-		}
-
-		// Search through all posts until the post with the given ID is found
-		Post postObject = null;
-		for (int i = 0; i < arrOfPosts.size(); i++) {
-			int idToCheck = this.arrOfPosts.get(i).getId();
-			if (idToCheck == id) {
-				postObject = this.arrOfPosts.get(i);
-				break;
-			}
-		}
+		Post postObject = searchForPost(id);
 
 		// If a post with given ID is not found, search through all comments until the
-		// post width given id is found.
+		// given post id is found.
+		Comment commentObject = null;
 		if (postObject == null) {
-			for (int i = 0; i < arrOfComments.size(); i++) {
-				int idToCheck = this.arrOfComments.get(i).getId();
-				if (idToCheck == id) {
-					postObject = this.arrOfComments.get(i);
-					break;
-				}
-			}
+			postObject = searchForComment(id);
 
 		}
 
 		// If a post with given ID is not found, search through all endorsed posts until
 		// the post width given id is found.
-		if (postObject == null) {
-			for (int i = 0; i < arrOfEndorsedPosts.size(); i++) {
-				int idToCheck = this.arrOfEndorsedPosts.get(i).getId();
-				if (idToCheck == id) {
-					postObject = this.arrOfEndorsedPosts.get(i);
-					break;
-				}
-			}
+		EndorsedPost endorsedPostObject = null;
+		if (postObject == null && commentObject == null) {
+			endorsedPostObject = searchForEndorsedPost(id);
 
 			// Throw exception if an endorsed post with the given id was found.
-			if (postObject != null) {
+			if (endorsedPostObject != null) {
 				throw new NotActionablePostException(
 						"You cannot endorse an endorsed post. ID of post you tried to endorse: " + id);
 			}
 		}
 
-		// If a post with given ID is not found, search through all empty posts until
-		// the post width given id is found.
-		if (postObject != null) {
-			boolean isAnEmptyPost = false;
-			for (int i = 0; i < arrOfEmptyPosts.size(); i++) {
-				int idToCheck = this.arrOfEmptyPosts.get(i).getId();
-				if (idToCheck == id) {
-					isAnEmptyPost = true;
-					break;
-				}
-			}
-
-			// Throw exception if an endorsed post with the given id was found.
-			if (isAnEmptyPost) {
-				throw new NotActionablePostException("You cannot endorse an empty post.");
-			}
-		}
-
 		// Throw exception if no post with the given id was found
-		if (postObject == null) {
+		if (postObject == null && commentObject == null && endorsedPostObject == null) {
 			throw new PostIDNotRecognisedException("The post with ID: " + id + " was not found.");
 		}
 
-		// Check that the provided message is within the allowed length (0 to 100 chars)
-		// TODO 'up to 100 characters' means less than 100? or <= 100 ?
-		if (message.length() >= 100) {
-			throw new InvalidPostException("Post message contains: " + message.length()
-					+ " characters. Message can only contain up to 100 characters.");
-		} else if (message.length() == 0) {
-			throw new InvalidPostException("Post message contains: 0 characters. The post message cannot be empty.");
+		// If a post with given ID is found, check that the post is not an empty post.
+		// Throw exception if the post found is an empty post.
+		if (isPostEmpty(id)) {
+			throw new NotActionablePostException("You cannot endorse an empty post.");
 		}
 
+		// Check that the provided message is within the allowed length (0 to 100 chars)
+		isMessageOfCorrectLength(message);
+
 		// create post object and append to arr of posts
-		// Try catch and null used because badsocialmedia thought i do not handle
-		// TODO: make sure this works as i intended it to.
-		Comment commentObject = new Comment(authorObject, postObject, message); // TODO: check this throws
-																				// invalidpostexception
+		commentObject = new Comment(authorObject, postObject, message); // TODO: check this throws invalid post
+																		// exception when needed.
 		this.arrOfComments.add(commentObject);
 
 		return commentObject.getId();
@@ -344,50 +381,39 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	@Override
 	public void deletePost(int id) throws PostIDNotRecognisedException {
 		// (Ollie)
-		// Search through all posts until the post with the given ID is found
-		Post postObject = null;
-		for (int i = 0; i < arrOfPosts.size(); i++) {
-			int idToCheck = this.arrOfPosts.get(i).getId();
-			if (idToCheck == id) {
-				postObject = this.arrOfPosts.get(i);
-				break;
-			}
-		}
+		Post postObject = searchForPost(id);
 
 		// If a post with given ID is not found, search through all comments until the
 		// post width given id is found.
+		Comment commentObject = null;
 		if (postObject == null) {
-			for (int i = 0; i < arrOfComments.size(); i++) {
-				int idToCheck = this.arrOfComments.get(i).getId();
-				if (idToCheck == id) {
-					postObject = this.arrOfComments.get(i);
-					break;
-				}
-			}
+			commentObject = searchForComment(id);
 		}
 
 		// If a post with given ID is not found, search through all endorsed posts until
 		// the post with the given id is found.
-		if (postObject == null) {
-			for (int i = 0; i < arrOfEndorsedPosts.size(); i++) {
-				int idToCheck = this.arrOfEndorsedPosts.get(i).getId();
-				if (idToCheck == id) {
-					postObject = this.arrOfEndorsedPosts.get(i);
-					break;
-				}
-			}
+		EndorsedPost endorsedPostObject = null;
+		if (postObject == null && commentObject == null) {
+			endorsedPostObject = searchForEndorsedPost(id);
 		}
 
 		// Throw exception if no post with the given id was found
-		if (postObject == null) {
+		if (postObject == null && commentObject == null && endorsedPostObject == null) {
+			throw new PostIDNotRecognisedException("The post with ID: " + id + " was not found.");
+		}
+
+		// TODO: is this right or not? should i be searching for this post or no?
+		// If the post is an empty post, say it is not found
+		if (isPostEmpty(id)) {
 			throw new PostIDNotRecognisedException("The post with ID: " + id + " was not found.");
 		}
 
 		// Turn the post into an empty post
 		postObject.setEmptyPost();
+
 		// TODO: when a post of empty should it be removed from the list of posts or
 		// not? I think not? I assumed not.
-		// arrOfEmprtPosts.remove(postObject)
+		// arrOfPosts.remove(postObject)
 		arrOfEmptyPosts.add(postObject);
 	}
 
@@ -396,42 +422,28 @@ public class BadSocialMedia implements SocialMediaPlatform {
 		// (Ollie)
 		// Check the id is valid, and get the post object.
 		// Search through all posts until the post with the given ID is found
-		Post postObject = null;
-		for (int i = 0; i < arrOfPosts.size(); i++) {
-			int idToCheck = this.arrOfPosts.get(i).getId();
-			if (idToCheck == id) {
-				postObject = this.arrOfPosts.get(i);
-				break;
-			}
-		}
+		Post postObject = searchForPost(id);
 
 		// If a post with given ID is not found, search through all comments until the
 		// post width given id is found.
+		Comment commentObject = null;
 		if (postObject == null) {
-			for (int i = 0; i < arrOfComments.size(); i++) {
-				int idToCheck = this.arrOfComments.get(i).getId();
-				if (idToCheck == id) {
-					postObject = this.arrOfComments.get(i);
-					break;
-				}
-			}
+			commentObject = searchForComment(id);
 
 		}
 
 		// If a post with given ID is not found, search through all endorsed posts until
 		// the post width given id is found.
-		if (postObject == null) {
-			for (int i = 0; i < arrOfEndorsedPosts.size(); i++) {
-				int idToCheck = this.arrOfEndorsedPosts.get(i).getId();
-				if (idToCheck == id) {
-					postObject = this.arrOfEndorsedPosts.get(i);
-					break;
-				}
-			}
+		EndorsedPost endorsedPostObject = null;
+		if (postObject == null && commentObject == null) {
+			endorsedPostObject = searchForEndorsedPost(id);
 		}
 
+		// TODO: should i be checking for empty posts? Right now it will display empty
+		// posts, but i am not sure that it should.
+
 		// Throw exception if a post with the given id was not found.
-		if (postObject == null) {
+		if (postObject == null && commentObject == null && endorsedPostObject == null) {
 			throw new PostIDNotRecognisedException("The post with ID: " + id + " was not found.");
 		}
 
@@ -449,41 +461,24 @@ public class BadSocialMedia implements SocialMediaPlatform {
 			throws PostIDNotRecognisedException, NotActionablePostException {
 		// (Ollie)
 		// Search through all posts until the post with the given ID is found
-		Post postObject = null;
-		for (int i = 0; i < arrOfPosts.size(); i++) {
-			int idToCheck = this.arrOfPosts.get(i).getId();
-			if (idToCheck == id) {
-				postObject = this.arrOfPosts.get(i);
-				break;
-			}
-		}
+		Post postObject = searchForPost(id);
 
 		// If a post with given ID is not found, search through all comments until the
 		// post width given id is found.
+		Comment commentObject = null;
 		if (postObject == null) {
-			for (int i = 0; i < arrOfComments.size(); i++) {
-				int idToCheck = this.arrOfComments.get(i).getId();
-				if (idToCheck == id) {
-					postObject = this.arrOfComments.get(i);
-					break;
-				}
-			}
+			commentObject = searchForComment(id);
 
 		}
 
 		// If a post with given ID is not found, search through all endorsed posts until
 		// the post width given id is found.
-		if (postObject == null) {
-			for (int i = 0; i < arrOfEndorsedPosts.size(); i++) {
-				int idToCheck = this.arrOfEndorsedPosts.get(i).getId();
-				if (idToCheck == id) {
-					postObject = this.arrOfEndorsedPosts.get(i);
-					break;
-				}
-			}
+		EndorsedPost endorsedPostObject = null;
+		if (postObject == null && commentObject == null) {
+			endorsedPostObject = searchForEndorsedPost(id);
 
 			// Throw exception if an endorsed post with the given id was found.
-			if (postObject != null) {
+			if (endorsedPostObject != null) {
 				throw new NotActionablePostException(
 						"You cannot endorse an endorsed post. ID of post you tried to endorse: " + id);
 			}
@@ -497,7 +492,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 		// comments
 		ArrayList<Comment> InitialArrOfComments = postObject.getArrayOfComments();
 		for (int i = 0; i < postObject.getNumberOfComments(); i++) {
-			Comment commentObject = InitialArrOfComments.get(i);
+			commentObject = InitialArrOfComments.get(i);
 
 			stringToReturn += showComments(commentObject, 1);
 		}
@@ -596,17 +591,17 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public int getMostEndorsedAccount() {
-		//TODO: Do we have to make work when multiple accounts have the same endorsement num?
+		// TODO: Do we have to make work when multiple accounts have the same
+		// endorsement num?
+		// I think you just have to display one of them, it shouldnt matter which.
 
 		Account mostEndorsedAccount = null;
 		int numEndorsementsOfMaxAccount = 0;
 
 		List<Account> accounts = platform.getActiveAccounts();
 
-		for (Account account : accounts)
-		{
-			if (account.getEndorsements() >= numEndorsementsOfMaxAccount)
-			{
+		for (Account account : accounts) {
+			if (account.getEndorsements() >= numEndorsementsOfMaxAccount) {
 				mostEndorsedAccount = account;
 			}
 		}

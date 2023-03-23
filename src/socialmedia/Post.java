@@ -9,6 +9,8 @@ public class Post {
     private ArrayList<Comment> arrOfComments; 
     private ArrayList<EndorsedPost> arrOfEndorsements;
 
+    private boolean isEmptyPost;
+
 
     /**<p>Creates a new instance of the Post class.</p>
      * 
@@ -20,7 +22,7 @@ public class Post {
         this.author = author;
         setMessage(message);
         author.addPost(this); //Add the post to the list of posts created by the author
-
+        isEmptyPost = false;
         //Increment and set the post id. (this means the id will start from 1)
         //TODO: if the id somehow reaches 2147483648 the program will crash
         postID++;
@@ -76,6 +78,7 @@ public class Post {
     public void setEmptyPost() {
         this.author = null;
         this.message = "The original content was removed from the system and is no longer available.";
+        this.isEmptyPost = true;
     }
 
     public void setPostId(int newPostId) {
@@ -105,6 +108,10 @@ public class Post {
     }
 
     public void addEndorseeHandleToMessage(String endorseeHandle) {
-        this.message = "EP@" + endorseeHandle + ": " + this.getMessage(); 
+        this.message = "EP@" + endorseeHandle + ": " + this.getMessage();
+    }
+    
+    public boolean isEmptyPost() {
+        return this.isEmptyPost;
     }
 }

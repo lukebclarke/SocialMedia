@@ -129,7 +129,7 @@ public interface MiniSocialMediaPlatform extends Serializable {
 	 *                                      fact, the endorsement must refers to A.
 	 */
 	int endorsePost(String handle, int id)
-			throws HandleNotRecognisedException, PostIDNotRecognisedException, NotActionablePostException;
+			throws HandleNotRecognisedException, PostIDNotRecognisedException, NotActionablePostException, InvalidPostException;
 
 	/**
 	 * The method creates a comment post referring to an existing post, similarly to
