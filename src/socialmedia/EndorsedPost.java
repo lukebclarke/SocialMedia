@@ -1,12 +1,11 @@
 package socialmedia;
 
 public class EndorsedPost extends Post {
-    public EndorsedPost(Account authorObject, Post postObject) throws InvalidPostException {
+    public EndorsedPost(Account authorObject, Post postObject) {
         //Call Post constructor
-        super(authorObject, postObject.getMessage());
+        super(authorObject, postObject);
 
         //Change the post message to include handle of user to endorse
-        addEndorseeHandleToMessage(authorObject.getHandle());
         postObject.addEndorsedPost(this);
     }
 

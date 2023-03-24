@@ -12,14 +12,14 @@ import java.util.ArrayList;
  * @version 1.0
  */
 public class BadSocialMedia implements SocialMediaPlatform {
-	private ArrayList<Account> arrOfAccounts;
-	private ArrayList<Post> arrOfPosts;
-	private ArrayList<EndorsedPost> arrOfEndorsedPosts;
-	private ArrayList<Comment> arrOfComments;
-	private ArrayList<Post> arrOfEmptyPosts;
+	private ArrayList<Account> arrOfAccounts = new ArrayList<Account>(0);
+	private ArrayList<Post> arrOfPosts  = new ArrayList<Post>(0);
+	private ArrayList<EndorsedPost> arrOfEndorsedPosts = new ArrayList<EndorsedPost>(0);
+	private ArrayList<Comment> arrOfComments = new ArrayList<Comment>(0);
+	private ArrayList<Post> arrOfEmptyPosts = new ArrayList<Post>(0);
 
-	private ArrayList<Account> arrOfActiveAccounts;
-	private ArrayList<Account> arrOfDeactivatedAccounts;
+	private ArrayList<Account> arrOfActiveAccounts = new ArrayList<Account>(0);
+	private ArrayList<Account> arrOfDeactivatedAccounts = new ArrayList<Account>(0);
 	// TODO: deleting a comment/endorsed post may not work
 	// To fix this, i think i can just change the type of the variable on variable
 	// asignment in each for loop?
@@ -46,7 +46,10 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	// probably break the code
 	@Override
 	public int createAccount(String handle) throws IllegalHandleException, InvalidHandleException {
-		int accountID = this.arrOfActiveAccounts.size() + this.arrOfDeactivatedAccounts.size(); // generates unique accountID
+		int numActiveAccounts = (this.arrOfActiveAccounts != null) ? this.arrOfActiveAccounts.size() : 0;
+		int numDeactivatedAccounts = (this.arrOfDeactivatedAccounts != null) ? this.arrOfDeactivatedAccounts.size() : 0;
+
+		int accountID = numActiveAccounts + numDeactivatedAccounts; // generates unique accountID
 
 		Account account = new Account(accountID, handle, "");
 		this.arrOfActiveAccounts.add(account);
@@ -66,15 +69,19 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public void removeAccount(int id) throws AccountIDNotRecognisedException {
-		ArrayList<Account> accounts = this.arrOfActiveAccounts;
+		ArrayList<Account> accounts = new ArrayList<>(this.arrOfActiveAccounts);
 
 		for (Account account : accounts) {
 			if (account.getAccountID() == id) // iterates through all accounts until the desired account is found
 			{
 				arrOfActiveAccounts.remove(account);
 				arrOfDeactivatedAccounts.add(account);
-				account.deleteAccount(platform); //TODO: change what this function does (i think?)
-												 //TODO: remove all posts relating to this account (i think?) 
+
+				//Delete all postss for a given account
+				for (Post post : arrOfPosts) {
+					post.setEmptyPost(); //TODO: this doesn't seem right? but i think will work ns if works with comments & endorsements.
+				}
+				//TODO: i think that this will not work on comments and endorsed posts as they wont be able to be put into the postArr in the account class.
 			}
 		}
 	}
@@ -88,8 +95,12 @@ public class BadSocialMedia implements SocialMediaPlatform {
 			{
 				arrOfActiveAccounts.remove(account);
 				arrOfDeactivatedAccounts.add(account);
-				account.deleteAccount(platform); //TODO: change what this function does (i think?)
-												 //TODO: remove all posts relating to this account (i think?) 
+				
+				//Delete all postss for a given account
+				for (Post post : arrOfPosts) {
+					post.setEmptyPost(); //TODO: this doesn't seem right? but i think will work ns if works with comments & endorsements.
+				}
+				//TODO: i think that this will not work on comments and endorsed posts as they wont be able to be put into the postArr in the account class.
 			}
 		}
 	}
@@ -282,8 +293,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public int endorsePost(String handle, int id)
-			throws HandleNotRecognisedException, PostIDNotRecognisedException, NotActionablePostException,
-			InvalidPostException {
+			throws HandleNotRecognisedException, PostIDNotRecognisedException, NotActionablePostException {
 		// (Ollie)
 		Account authorObject = getAccountObject(handle);
 

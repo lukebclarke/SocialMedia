@@ -28,6 +28,18 @@ public class Post {
         postID++;
     }
 
+    public Post(Account author, Post postObject) {
+        this.author = author;
+        this.message = postObject.getMessage();
+        addEndorseeHandleToMessage(author.getHandle());
+
+        author.addPost(this); //Add the post to the list of posts created by the author
+        isEmptyPost = false;
+        //Increment and set the post id. (this means the id will start from 1)
+        //TODO: if the id somehow reaches 2147483648 the program will crash
+        postID++;
+    }
+
     public Account getAuthor() {
         return author;
     }
