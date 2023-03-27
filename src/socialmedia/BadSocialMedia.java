@@ -83,10 +83,6 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	@Override
 	public void removeAccount(int id) throws AccountIDNotRecognisedException {
 		List<Account> accounts = platform.getActiveAccounts();
-		//Basically you need to retrieve your array of posts in this class, compare it to my (3?4?) arrays then call the 
-            // Delete post method in the badsocialmedia class where any matches are found
-            // if easier i can do this but we should meet to do this to make it easier.
-            //post.deletePost();
 
 		for (Account account : accounts) {
 			if (account.getAccountID() == id) // iterates through all accounts until the desired account is found
@@ -95,11 +91,10 @@ public class BadSocialMedia implements SocialMediaPlatform {
 				{
 					if (post.getAuthor() == account)
 					{
-						//working here rn just committing so u can see what I've done
+						int ID = post.getId();
+						deletePost(ID);
 					}
 				}
-
-
 				return;
 			}
 		}
