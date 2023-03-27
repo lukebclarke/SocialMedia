@@ -6,8 +6,8 @@ public class Post {
     private Account author;
     private String message;
     private static int postID;
-    private ArrayList<Comment> arrOfComments; 
-    private ArrayList<EndorsedPost> arrOfEndorsements;
+    private ArrayList<Comment> arrOfComments = new ArrayList<Comment>(0); 
+    private ArrayList<EndorsedPost> arrOfEndorsements  = new ArrayList<EndorsedPost>(0);
 
     private boolean isEmptyPost;
 

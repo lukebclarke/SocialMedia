@@ -12,7 +12,6 @@ import java.util.ArrayList;
  * @version 1.0
  */
 public class BadSocialMedia implements SocialMediaPlatform {
-	private ArrayList<Account> arrOfAccounts = new ArrayList<Account>(0);
 	private ArrayList<Post> arrOfPosts  = new ArrayList<Post>(0);
 	private ArrayList<EndorsedPost> arrOfEndorsedPosts = new ArrayList<EndorsedPost>(0);
 	private ArrayList<Comment> arrOfComments = new ArrayList<Comment>(0);
@@ -44,6 +43,8 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	// TODO: (ollie) most things require post object to be passed as param but
 	// sometimes comment and endorsed post objects are passed instead which will
 	// probably break the code
+
+	//TODO: (ollie) i currently use 'arrayOfAccounts' where i should be using 'arrayOfActiveAccounts' in all post classes
 	@Override
 	public int createAccount(String handle) throws IllegalHandleException, InvalidHandleException {
 		int numActiveAccounts = (this.arrOfActiveAccounts != null) ? this.arrOfActiveAccounts.size() : 0;
@@ -59,7 +60,10 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public int createAccount(String handle, String description) throws IllegalHandleException, InvalidHandleException {
-		int accountID = this.arrOfAccounts.size() + this.arrOfDeactivatedAccounts.size(); // generates unique accountID
+		int numActiveAccounts = (this.arrOfActiveAccounts != null) ? this.arrOfActiveAccounts.size() : 0;
+		int numDeactivatedAccounts = (this.arrOfDeactivatedAccounts != null) ? this.arrOfDeactivatedAccounts.size() : 0;
+
+		int accountID = numActiveAccounts + numDeactivatedAccounts; // generates unique accountID
 
 		Account account = new Account(accountID, handle, description);
 		this.arrOfActiveAccounts.add(account);
@@ -167,7 +171,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	 */
 	private Account getAccountObject(String handle) throws HandleNotRecognisedException {
 		Account accountObject = null;
-		for (Account authorToCheck : arrOfAccounts) {
+		for (Account authorToCheck : arrOfActiveAccounts) {
 			String handleToCheck = authorToCheck.getHandle();
 			if (handleToCheck == handle) {
 				accountObject = authorToCheck;
@@ -309,7 +313,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 		// If a comment with the given ID is not found, search for the id in endorsed
 		// posts.
 		EndorsedPost endorsedPostObject = null;
-		if (authorObject == null && commentObject == null) {
+		if (postObject == null && commentObject == null) {
 			endorsedPostObject = searchForEndorsedPost(id);
 
 			// Throw exception if an endorsed post with the given id was found.
@@ -335,7 +339,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 		if (authorObject != null) {
 			endorsedPostObject = new EndorsedPost(authorObject, postObject);
 		}
-		if (commentObject != null) {
+		else if (commentObject != null) {
 			endorsedPostObject = new EndorsedPost(authorObject, commentObject);
 		}
 
@@ -556,9 +560,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public int getNumberOfAccounts() {
-		List<Account> accounts = platform.getActiveAccounts();
-
-		return accounts.size();
+		return this.arrOfActiveAccounts.size();
 	}
 
 	@Override
