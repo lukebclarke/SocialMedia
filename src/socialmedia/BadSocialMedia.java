@@ -25,13 +25,6 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	private Platform platform = new Platform();
 
-	// LUKE TODO: what do the throw exceptions do, do i have to code that
-	// Yes, easier to explain it in person but you can also look at my code, you
-	// kind of put a message into one of the functions when there is an "error" like
-	// if the handle has to be less than 10 characters long but the handle is 20
-	// characters long it should throw an exception. (like the except block of try:
-	// except: in python)
-
 	// TODO: the platform class shouldnt be used i think which breaks a lot of your
 	// code :( this is my fault but i will explain and we
 	// can fix it, unless it works for yours then i can probably change my code to
@@ -43,14 +36,14 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	// TODO: (ollie) most things require post object to be passed as param but
 	// sometimes comment and endorsed post objects are passed instead which will
 	// probably break the code
+	
 
 	//TODO: (ollie) i currently use 'arrayOfAccounts' where i should be using 'arrayOfActiveAccounts' in all post classes
 	@Override
 	public int createAccount(String handle) throws IllegalHandleException, InvalidHandleException {
-		int numActiveAccounts = (this.arrOfActiveAccounts != null) ? this.arrOfActiveAccounts.size() : 0;
-		int numDeactivatedAccounts = (this.arrOfDeactivatedAccounts != null) ? this.arrOfDeactivatedAccounts.size() : 0;
-
-		int accountID = numActiveAccounts + numDeactivatedAccounts; // generates unique accountID
+		int accountID = platform.getActiveAccounts().size() + platform.getDeactivatedAccounts().size(); // generates
+																										// unique
+																										// accountID
 
 		Account account = new Account(accountID, handle, "");
 		this.arrOfActiveAccounts.add(account);
@@ -60,17 +53,29 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public int createAccount(String handle, String description) throws IllegalHandleException, InvalidHandleException {
-		int numActiveAccounts = (this.arrOfActiveAccounts != null) ? this.arrOfActiveAccounts.size() : 0;
-		int numDeactivatedAccounts = (this.arrOfDeactivatedAccounts != null) ? this.arrOfDeactivatedAccounts.size() : 0;
+		List<Account> accounts = platform.getActiveAccounts();
 
-		int accountID = numActiveAccounts + numDeactivatedAccounts; // generates unique accountID
+		for (Account account : accounts) {
+			if (account.getHandle() == handle) // iterates through all accounts to check none of them have already used the handle
+			{
+				throw new IllegalHandleException("Illegal handle: " + handle); //an illegal handle is a handle already in use
+			}
+		}
 
-		Account account = new Account(accountID, handle, description);
-		this.arrOfActiveAccounts.add(account);
+		if (handle.length() == 0 || handle.length() > 30 || handle.contains(" ")) //if the handle empty, too long or contains whitespace
+		{
+			throw new InvalidHandleException(); 
+		}
+		
+		int accountID = platform.getActiveAccounts().size() + platform.getDeactivatedAccounts().size(); // generates
+																										// unique
+																										// accountID
+		platform.addActiveAccount(new Account(accountID, handle, ""));
 
 		return account.getAccountID();
 	}
 
+	//TODO Luke
 	@Override
 	public void removeAccount(int id) throws AccountIDNotRecognisedException {
 		ArrayList<Account> accounts = new ArrayList<>(this.arrOfActiveAccounts);
@@ -88,6 +93,8 @@ public class BadSocialMedia implements SocialMediaPlatform {
 				//TODO: i think that this will not work on comments and endorsed posts as they wont be able to be put into the postArr in the account class.
 			}
 		}
+
+		throw new AccountIDNotRecognisedException("Account ID " + id + " not found."); //if account not found
 	}
 
 	@Override
@@ -135,10 +142,23 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public String showAccount(String handle) throws HandleNotRecognisedException {
-		// TODO decide what this does
-		// (luke) hover over showAccount() function - it shows what this should look
-		// like :)
-		return null;
+		List<Account> accounts = platform.getActiveAccounts();
+
+		for (Account account : accounts) {
+			if (account.getHandle() == handle) // iterates through all accounts until the desired account is found
+			{
+				int ID = account.getAccountID();
+				String desc = account.getDescription();
+				int PostCount = account.GetPosts().size();
+				int EndorseCount = account.getEndorsements();
+
+				String accountDetails = String.format("ID: %d \nHandle: %s \nDescription: %s \nPost Count: %d \nEndorse Count: %d", ID, handle, desc, PostCount, EndorseCount);
+
+				return accountDetails;
+			}
+		}
+
+		throw new HandleNotRecognisedException("Handle not recognised: " + handle);
 	}
 
 	/**
@@ -528,6 +548,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 		sb.append(stringToReturn);
 
 		return sb;
+ 
 	}
 
 	private String showComments(Comment commentObject, int commentLevel) {
@@ -630,10 +651,6 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public int getMostEndorsedAccount() {
-		// TODO: Do we have to make work when multiple accounts have the same
-		// endorsement num?
-		// I think you just have to display one of them, it shouldnt matter which.
-
 		Account mostEndorsedAccount = null;
 		int numEndorsementsOfMaxAccount = 0;
 
