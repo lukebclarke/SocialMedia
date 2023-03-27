@@ -24,20 +24,28 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	private Platform platform = new Platform();
 
-	// LUKE TODO: what do the throw exceptions do, do i have to code that
-	// Yes, easier to explain it in person but you can also look at my code, you
-	// kind of put a message into one of the functions when there is an "error" like
-	// if the handle has to be less than 10 characters long but the handle is 20
-	// characters long it should throw an exception. (like the except block of try:
-	// except: in python)
-
 	//TODO: the platform class shouldnt be used i think which breaks a lot of your code :( this is my fault but i will explain and we
 	//can fix it, unless it works for yours then i can probably change my code to use it maybe i was just being dumb when i made that class
 	// because i didnt realise this file was a class.
 
 	//TODO: (ollie) most things require postobject to be passed as param but sometimes comment and endorsed post objects are passed instead which will probably break the code
+	
 	@Override
 	public int createAccount(String handle) throws IllegalHandleException, InvalidHandleException {
+		List<Account> accounts = platform.getActiveAccounts();
+
+		for (Account account : accounts) {
+			if (account.getHandle() == handle) // iterates through all accounts to check none of them have already used the handle
+			{
+				throw new IllegalHandleException("Illegal handle: " + handle); //an illegal handle is a handle already in use
+			}
+		}
+
+		if (handle.length() == 0 || handle.length() > 30 || handle.contains(" ")) //if the handle empty, too long or contains whitespace
+		{
+			throw new InvalidHandleException(); 
+		}
+		
 		int accountID = platform.getActiveAccounts().size() + platform.getDeactivatedAccounts().size(); // generates
 																										// unique
 																										// accountID
@@ -49,25 +57,54 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public int createAccount(String handle, String description) throws IllegalHandleException, InvalidHandleException {
+		List<Account> accounts = platform.getActiveAccounts();
+
+		for (Account account : accounts) {
+			if (account.getHandle() == handle) // iterates through all accounts to check none of them have already used the handle
+			{
+				throw new IllegalHandleException("Illegal handle: " + handle); //an illegal handle is a handle already in use
+			}
+		}
+
+		if (handle.length() == 0 || handle.length() > 30 || handle.contains(" ")) //if the handle empty, too long or contains whitespace
+		{
+			throw new InvalidHandleException(); 
+		}
+		
 		int accountID = platform.getActiveAccounts().size() + platform.getDeactivatedAccounts().size(); // generates
 																										// unique
 																										// accountID
-
 		platform.addActiveAccount(new Account(accountID, handle, ""));
 
 		return accountID;
 	}
 
+	//TODO Luke
 	@Override
 	public void removeAccount(int id) throws AccountIDNotRecognisedException {
 		List<Account> accounts = platform.getActiveAccounts();
+		//Basically you need to retrieve your array of posts in this class, compare it to my (3?4?) arrays then call the 
+            // Delete post method in the badsocialmedia class where any matches are found
+            // if easier i can do this but we should meet to do this to make it easier.
+            //post.deletePost();
 
 		for (Account account : accounts) {
 			if (account.getAccountID() == id) // iterates through all accounts until the desired account is found
 			{
-				account.deleteAccount(platform);
+				for (Post post : arrOfPosts)
+				{
+					if (post.getAuthor() == account)
+					{
+						//working here rn just committing so u can see what I've done
+					}
+				}
+
+
+				return;
 			}
 		}
+
+		throw new AccountIDNotRecognisedException("Account ID " + id + " not found."); //if account not found
 	}
 
 	@Override
@@ -110,10 +147,23 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public String showAccount(String handle) throws HandleNotRecognisedException {
-		// TODO decide what this does
-		// (luke) hover over showAccount() function - it shows what this should look
-		// like :)
-		return null;
+		List<Account> accounts = platform.getActiveAccounts();
+
+		for (Account account : accounts) {
+			if (account.getHandle() == handle) // iterates through all accounts until the desired account is found
+			{
+				int ID = account.getAccountID();
+				String desc = account.getDescription();
+				int PostCount = account.GetPosts().size();
+				int EndorseCount = account.getEndorsements();
+
+				String accountDetails = String.format("ID: %d \nHandle: %s \nDescription: %s \nPost Count: %d \nEndorse Count: %d", ID, handle, desc, PostCount, EndorseCount);
+
+				return accountDetails;
+			}
+		}
+
+		throw new HandleNotRecognisedException("Handle not recognised: " + handle);
 	}
 
 	/**
@@ -498,12 +548,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 			stringToReturn += showComments(commentObject, 1);
 		}
-
-		// Convert the string to stringbuilder
-		StringBuilder sb = new StringBuilder();
-		sb.append(stringToReturn);
-
-		return sb;
+ 
 	}
 
 	private String showComments(Comment commentObject, int commentLevel) {
@@ -593,10 +638,6 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public int getMostEndorsedAccount() {
-		// TODO: Do we have to make work when multiple accounts have the same
-		// endorsement num?
-		// I think you just have to display one of them, it shouldnt matter which.
-
 		Account mostEndorsedAccount = null;
 		int numEndorsementsOfMaxAccount = 0;
 

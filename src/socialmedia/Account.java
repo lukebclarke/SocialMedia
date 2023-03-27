@@ -49,6 +49,11 @@ public class Account {
         Posts.remove(postObject);
     }
 
+    public ArrayList<Post> GetPosts()
+    {
+        return this.Posts;
+    }
+
     public void deleteAccount(Platform platform)
     {
         for (Post post : Posts)
