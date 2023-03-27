@@ -6,7 +6,7 @@ public class Account {
     private int accountID;
     private String handle;
     private String description;
-    private ArrayList<Post> Posts; //used to track which posts the author has for easy deletion (not sure if needed - TODO: double check)
+    private ArrayList<Post> Posts = new ArrayList<Post>(0); //used to track which posts the author has for easy deletion (not sure if needed - TODO: double check)
     private int numEndorsements = 0;
 
     public Account(int ID, String Username, String bio)
@@ -47,11 +47,6 @@ public class Account {
 
     public void removePost(Post postObject) {
         Posts.remove(postObject);
-    }
-
-    public ArrayList<Post> GetPosts()
-    {
-        return this.Posts;
     }
 
     public void deleteAccount(Platform platform)

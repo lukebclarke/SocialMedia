@@ -6,8 +6,8 @@ public class Post {
     private Account author;
     private String message;
     private static int postID;
-    private ArrayList<Comment> arrOfComments; 
-    private ArrayList<EndorsedPost> arrOfEndorsements;
+    private ArrayList<Comment> arrOfComments = new ArrayList<Comment>(0); 
+    private ArrayList<EndorsedPost> arrOfEndorsements  = new ArrayList<EndorsedPost>(0);
 
     private boolean isEmptyPost;
 
@@ -21,6 +21,18 @@ public class Post {
     public Post(Account author, String message) throws InvalidPostException {
         this.author = author;
         setMessage(message);
+        author.addPost(this); //Add the post to the list of posts created by the author
+        isEmptyPost = false;
+        //Increment and set the post id. (this means the id will start from 1)
+        //TODO: if the id somehow reaches 2147483648 the program will crash
+        postID++;
+    }
+
+    public Post(Account author, Post postObject) {
+        this.author = author;
+        this.message = postObject.getMessage();
+        addEndorseeHandleToMessage(author.getHandle());
+
         author.addPost(this); //Add the post to the list of posts created by the author
         isEmptyPost = false;
         //Increment and set the post id. (this means the id will start from 1)

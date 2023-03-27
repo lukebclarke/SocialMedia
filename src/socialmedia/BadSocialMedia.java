@@ -12,47 +12,43 @@ import java.util.ArrayList;
  * @version 1.0
  */
 public class BadSocialMedia implements SocialMediaPlatform {
-	private ArrayList<Account> arrOfAccounts;
-	private ArrayList<Post> arrOfPosts;
-	private ArrayList<EndorsedPost> arrOfEndorsedPosts;
-	private ArrayList<Comment> arrOfComments;
-	private ArrayList<Post> arrOfEmptyPosts;
+	private ArrayList<Post> arrOfPosts  = new ArrayList<Post>(0);
+	private ArrayList<EndorsedPost> arrOfEndorsedPosts = new ArrayList<EndorsedPost>(0);
+	private ArrayList<Comment> arrOfComments = new ArrayList<Comment>(0);
+	private ArrayList<Post> arrOfEmptyPosts = new ArrayList<Post>(0);
 
+	private ArrayList<Account> arrOfActiveAccounts = new ArrayList<Account>(0);
+	private ArrayList<Account> arrOfDeactivatedAccounts = new ArrayList<Account>(0);
 	// TODO: deleting a comment/endorsed post may not work
 	// To fix this, i think i can just change the type of the variable on variable
 	// asignment in each for loop?
 
 	private Platform platform = new Platform();
 
-	//TODO: the platform class shouldnt be used i think which breaks a lot of your code :( this is my fault but i will explain and we
-	//can fix it, unless it works for yours then i can probably change my code to use it maybe i was just being dumb when i made that class
+	// TODO: the platform class shouldnt be used i think which breaks a lot of your
+	// code :( this is my fault but i will explain and we
+	// can fix it, unless it works for yours then i can probably change my code to
+	// use it maybe i was just being dumb when i made that class
 	// because i didnt realise this file was a class.
 
-	//TODO: (ollie) most things require postobject to be passed as param but sometimes comment and endorsed post objects are passed instead which will probably break the code
+	// TODO: (ollie) currently accounts can endorse their own post.
+
+	// TODO: (ollie) most things require post object to be passed as param but
+	// sometimes comment and endorsed post objects are passed instead which will
+	// probably break the code
 	
+
+	//TODO: (ollie) i currently use 'arrayOfAccounts' where i should be using 'arrayOfActiveAccounts' in all post classes
 	@Override
 	public int createAccount(String handle) throws IllegalHandleException, InvalidHandleException {
-		List<Account> accounts = platform.getActiveAccounts();
-
-		for (Account account : accounts) {
-			if (account.getHandle() == handle) // iterates through all accounts to check none of them have already used the handle
-			{
-				throw new IllegalHandleException("Illegal handle: " + handle); //an illegal handle is a handle already in use
-			}
-		}
-
-		if (handle.length() == 0 || handle.length() > 30 || handle.contains(" ")) //if the handle empty, too long or contains whitespace
-		{
-			throw new InvalidHandleException(); 
-		}
-		
 		int accountID = platform.getActiveAccounts().size() + platform.getDeactivatedAccounts().size(); // generates
 																										// unique
 																										// accountID
 
-		platform.addActiveAccount(new Account(accountID, handle, ""));
+		Account account = new Account(accountID, handle, "");
+		this.arrOfActiveAccounts.add(account);
 
-		return accountID;
+		return account.getAccountID();
 	}
 
 	@Override
@@ -76,26 +72,26 @@ public class BadSocialMedia implements SocialMediaPlatform {
 																										// accountID
 		platform.addActiveAccount(new Account(accountID, handle, ""));
 
-		return accountID;
+		return account.getAccountID();
 	}
 
 	//TODO Luke
 	@Override
 	public void removeAccount(int id) throws AccountIDNotRecognisedException {
-		List<Account> accounts = platform.getActiveAccounts();
+		
+		ArrayList<Account> accounts = new ArrayList<>(this.arrOfActiveAccounts);
 
 		for (Account account : accounts) {
 			if (account.getAccountID() == id) // iterates through all accounts until the desired account is found
 			{
-				for (Post post : arrOfPosts)
-				{
-					if (post.getAuthor() == account)
-					{
-						int ID = post.getId();
-						deletePost(ID);
-					}
+				arrOfActiveAccounts.remove(account);
+				arrOfDeactivatedAccounts.add(account);
+
+				//Delete all postss for a given account
+				for (Post post : arrOfPosts) {
+					post.setEmptyPost(); //TODO: this doesn't seem right? but i think will work ns if works with comments & endorsements.
 				}
-				return;
+				//TODO: i think that this will not work on comments and endorsed posts as they wont be able to be put into the postArr in the account class.
 			}
 		}
 
@@ -104,21 +100,26 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public void removeAccount(String handle) throws HandleNotRecognisedException {
-		List<Account> accounts = platform.getActiveAccounts();
+		ArrayList<Account> accounts = this.arrOfActiveAccounts;
 
 		for (Account account : accounts) {
-			if (account.getDescription() == handle) // iterates through all accounts until the desired account is found
+			if (account.getHandle() == handle) // iterates through all accounts until the desired account is found
 			{
-				account.deleteAccount(platform);
+				arrOfActiveAccounts.remove(account);
+				arrOfDeactivatedAccounts.add(account);
+				
+				//Delete all postss for a given account
+				for (Post post : arrOfPosts) {
+					post.setEmptyPost(); //TODO: this doesn't seem right? but i think will work ns if works with comments & endorsements.
+				}
+				//TODO: i think that this will not work on comments and endorsed posts as they wont be able to be put into the postArr in the account class.
 			}
 		}
 	}
 
 	@Override
-	public void changeAccountHandle(String oldHandle, String newHandle)
-			throws HandleNotRecognisedException, IllegalHandleException, InvalidHandleException {
-
-		List<Account> accounts = platform.getActiveAccounts();
+	public void changeAccountHandle(String oldHandle, String newHandle) throws HandleNotRecognisedException, IllegalHandleException, InvalidHandleException {
+		ArrayList<Account> accounts = this.arrOfActiveAccounts;
 
 		for (Account account : accounts) {
 			if (account.getHandle() == oldHandle) // iterates through all accounts until the desired account is found
@@ -130,7 +131,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public void updateAccountDescription(String handle, String description) throws HandleNotRecognisedException {
-		List<Account> accounts = platform.getActiveAccounts();
+		ArrayList<Account> accounts = this.arrOfActiveAccounts;
 
 		for (Account account : accounts) {
 			if (account.getHandle() == handle) // iterates through all accounts until the desired account is found
@@ -191,7 +192,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	 */
 	private Account getAccountObject(String handle) throws HandleNotRecognisedException {
 		Account accountObject = null;
-		for (Account authorToCheck : arrOfAccounts) {
+		for (Account authorToCheck : arrOfActiveAccounts) {
 			String handleToCheck = authorToCheck.getHandle();
 			if (handleToCheck == handle) {
 				accountObject = authorToCheck;
@@ -317,8 +318,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public int endorsePost(String handle, int id)
-			throws HandleNotRecognisedException, PostIDNotRecognisedException, NotActionablePostException,
-			InvalidPostException {
+			throws HandleNotRecognisedException, PostIDNotRecognisedException, NotActionablePostException {
 		// (Ollie)
 		Account authorObject = getAccountObject(handle);
 
@@ -327,14 +327,14 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 		// If a post with the given ID is not found, search for the id in comments
 		Comment commentObject = null;
-		if (authorObject == null) {
+		if (postObject == null) {
 			commentObject = searchForComment(id);
 		}
 
 		// If a comment with the given ID is not found, search for the id in endorsed
 		// posts.
 		EndorsedPost endorsedPostObject = null;
-		if (authorObject == null && commentObject == null) {
+		if (postObject == null && commentObject == null) {
 			endorsedPostObject = searchForEndorsedPost(id);
 
 			// Throw exception if an endorsed post with the given id was found.
@@ -360,7 +360,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 		if (authorObject != null) {
 			endorsedPostObject = new EndorsedPost(authorObject, postObject);
 		}
-		if (commentObject != null) {
+		else if (commentObject != null) {
 			endorsedPostObject = new EndorsedPost(authorObject, commentObject);
 		}
 
@@ -543,6 +543,12 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 			stringToReturn += showComments(commentObject, 1);
 		}
+
+		// Convert the string to stringbuilder
+		StringBuilder sb = new StringBuilder();
+		sb.append(stringToReturn);
+
+		return sb;
  
 	}
 
@@ -576,33 +582,46 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public int getNumberOfAccounts() {
-		List<Account> accounts = platform.getActiveAccounts();
-
-		return accounts.size();
+		return this.arrOfActiveAccounts.size();
 	}
 
 	@Override
 	public int getTotalOriginalPosts() {
 		// (Ollie)
-		// TODO: this is wrong, as also includes deletion of comments and endorsements
-		// in the calculation
-		return this.arrOfPosts.size() - this.arrOfEmptyPosts.size();
+		Integer numPosts = 0;
+		for (Post post : arrOfPosts) {
+			if (!post.isEmptyPost()) {
+				numPosts++;
+			}
+		}
+
+		return numPosts;
 	}
 
 	@Override
 	public int getTotalEndorsmentPosts() {
 		// (Ollie)
-		// TODO: this is wrong, as also includes deletion of comments and endorsements
-		// in the calculation
-		return this.arrOfEndorsedPosts.size() - this.arrOfEmptyPosts.size();
+		Integer numPosts = 0;
+		for (Post post : arrOfEndorsedPosts) {
+			if (!post.isEmptyPost()) {
+				numPosts++;
+			}
+		}
+
+		return numPosts;
 	}
 
 	@Override
 	public int getTotalCommentPosts() {
 		// (Ollie)
-		// TODO: this is wrong, as also includes deletion of comments and endorsements
-		// in the calculation
-		return this.arrOfComments.size() - this.arrOfEmptyPosts.size();
+		Integer numPosts = 0;
+		for (Post post : arrOfComments) {
+			if (!post.isEmptyPost()) {
+				numPosts++;
+			}
+		}
+
+		return numPosts;
 	}
 
 	@Override
@@ -636,7 +655,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 		Account mostEndorsedAccount = null;
 		int numEndorsementsOfMaxAccount = 0;
 
-		List<Account> accounts = platform.getActiveAccounts();
+		ArrayList<Account> accounts = this.arrOfActiveAccounts;
 
 		for (Account account : accounts) {
 			if (account.getEndorsements() >= numEndorsementsOfMaxAccount) {
