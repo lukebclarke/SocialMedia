@@ -75,7 +75,6 @@ public class BadSocialMedia implements SocialMediaPlatform {
 		return account.getAccountID();
 	}
 
-	//TODO Luke
 	@Override
 	public void removeAccount(int id) throws AccountIDNotRecognisedException {
 		
@@ -89,7 +88,10 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 				//Delete all postss for a given account
 				for (Post post : arrOfPosts) {
-					post.setEmptyPost(); //TODO: this doesn't seem right? but i think will work ns if works with comments & endorsements.
+					if (post.getAuthor() == account)
+					{
+						post.setEmptyPost(); //TODO: this doesn't seem right? but i think will work ns if works with comments & endorsements.
+					}
 				}
 				//TODO: i think that this will not work on comments and endorsed posts as they wont be able to be put into the postArr in the account class.
 			}
@@ -108,9 +110,11 @@ public class BadSocialMedia implements SocialMediaPlatform {
 				arrOfActiveAccounts.remove(account);
 				arrOfDeactivatedAccounts.add(account);
 				
-				//Delete all postss for a given account
-				for (Post post : arrOfPosts) {
-					post.setEmptyPost(); //TODO: this doesn't seem right? but i think will work ns if works with comments & endorsements.
+				for (Post post : arrOfPosts)
+				{
+					if (post.getAuthor() == account)
+						post.setEmptyPost(); //TODO: this doesn't seem right? but i think will work ns if works with comments & endorsements.
+					}
 				}
 				//TODO: i think that this will not work on comments and endorsed posts as they wont be able to be put into the postArr in the account class.
 			}
