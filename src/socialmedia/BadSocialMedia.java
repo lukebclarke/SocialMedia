@@ -570,7 +570,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 			// Throw exception if an endorsed post with the given id was found.
 			if (endorsedPostObject != null) {
 				throw new NotActionablePostException(
-						"You cannot endorse an endorsed post. ID of post you tried to endorse: " + id);
+						"You cannot show the children of an endorsed post.");
 			}
 		}
 
@@ -580,11 +580,9 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 		// For each comment in the post, display the comment along with all of it's
 		// comments
-		ArrayList<Comment> InitialArrOfComments = postObject.getArrayOfComments();
-		for (int i = 0; i < postObject.getNumberOfComments(); i++) {
-			commentObject = InitialArrOfComments.get(i);
+		for (Comment comment : postObject.getArrayOfComments()) {
 
-			stringToReturn += showComments(commentObject, 1);
+			stringToReturn += showComments(comment, 1);
 		}
 
 		// Convert the string to stringbuilder
@@ -597,8 +595,6 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	private String showComments(Comment commentObject, int commentLevel) {
 		String stringToReturn = "";
-
-		ArrayList<Comment> arrOfComments = commentObject.getArrayOfComments();
 
 		// Calculate the spacing to the left of the message
 		String spacing = "";
@@ -625,8 +621,8 @@ public class BadSocialMedia implements SocialMediaPlatform {
 				+ "\n " + spacing + "%s", commentId, handle, numEndorsements, numComments, message);
 
 		// Call this function again for any further comments on this comment post.
-		for (int i = 0; i < arrOfComments.size(); i++) {
-			showComments(commentObject, commentLevel + 1);
+		for (Comment comment : commentObject.getArrayOfComments()) {
+			stringToReturn += showComments(comment, commentLevel + 1);
 		}
 
 		return stringToReturn;
