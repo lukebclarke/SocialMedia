@@ -23,8 +23,6 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	// To fix this, i think i can just change the type of the variable on variable
 	// asignment in each for loop?
 
-	private Platform platform = new Platform();
-
 	// TODO: the platform class shouldnt be used i think which breaks a lot of your
 	// code :( this is my fault but i will explain and we
 	// can fix it, unless it works for yours then i can probably change my code to
@@ -39,11 +37,12 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	
 
 	//TODO: (ollie) i currently use 'arrayOfAccounts' where i should be using 'arrayOfActiveAccounts' in all post classes
+	
 	@Override
 	public int createAccount(String handle) throws IllegalHandleException, InvalidHandleException {
 		
-		for (Account account : accounts) {
-			if (account.getHandle() == handle) // iterates through all accounts to check none of them have already used the handle
+		for (Account account : arrOfActiveAccounts) {
+			if (account.getHandle().equals(handle)) // iterates through all accounts to check none of them have already used the handle
 			{
 				throw new IllegalHandleException("Illegal handle: " + handle); //an illegal handle is a handle already in use
 			}
@@ -54,22 +53,19 @@ public class BadSocialMedia implements SocialMediaPlatform {
 			throw new InvalidHandleException(); 
 		}
 		
-		int accountID = platform.getActiveAccounts().size() + platform.getDeactivatedAccounts().size(); // generates
-																										// unique
-																										// accountID
+		int accountID = arrOfActiveAccounts.size() + arrOfDeactivatedAccounts.size(); // generates unique accountID
 
 		Account account = new Account(accountID, handle, "");
-		this.arrOfActiveAccounts.add(account);
+		this.arrOfActiveAccounts.add(account); //adds reference to account object to list of accounts
 
 		return account.getAccountID();
 	}
 
 	@Override
 	public int createAccount(String handle, String description) throws IllegalHandleException, InvalidHandleException {
-		List<Account> accounts = platform.getActiveAccounts();
-
-		for (Account account : accounts) {
-			if (account.getHandle() == handle) // iterates through all accounts to check none of them have already used the handle
+		
+		for (Account account : arrOfActiveAccounts) {
+			if (account.getHandle().equals(handle)) // iterates through all accounts to check none of them have already used the handle
 			{
 				throw new IllegalHandleException("Illegal handle: " + handle); //an illegal handle is a handle already in use
 			}
@@ -80,33 +76,42 @@ public class BadSocialMedia implements SocialMediaPlatform {
 			throw new InvalidHandleException(); 
 		}
 		
-		int accountID = platform.getActiveAccounts().size() + platform.getDeactivatedAccounts().size(); // generates
-																										// unique
-																										// accountID
-		platform.addActiveAccount(new Account(accountID, handle, ""));
+		int accountID = arrOfActiveAccounts.size() + arrOfDeactivatedAccounts.size(); // generates unique accountID
+		
+		Account account = new Account(accountID, handle, description);
+		this.arrOfActiveAccounts.add(account); //adds reference to account object to list of accounts
 
 		return account.getAccountID();
 	}
 
 	@Override
 	public void removeAccount(int id) throws AccountIDNotRecognisedException {
-		
-		ArrayList<Account> accounts = new ArrayList<>(this.arrOfActiveAccounts);
-
-		for (Account account : accounts) {
+		for (Account account : arrOfActiveAccounts) {
 			if (account.getAccountID() == id) // iterates through all accounts until the desired account is found
 			{
+				//Delete all posts for a given account
+				for (Post post : account.getPosts()) {
+					post.setEmptyPost();
+				}
+				
+				//TODO: What actually is an endorsed post? Is it just a normal post added to another list that tracks
+				//the specific posts a user has liked? If so, instead of setting the post to empty should I just
+				//be removing an endorsement from a post?
+
+				//Deletes all endorsed posts for a given account
+				for (EndorsedPost endorsedPost : account.getEndorsedPosts()) {
+					endorsedPost.setEmptyPost();
+				}
+
+				//Deletes all comments for a given account
+				for (Comment comment : account.getComments()) {
+					comment.setEmptyPost();
+				}
+
 				arrOfActiveAccounts.remove(account);
 				arrOfDeactivatedAccounts.add(account);
 
-				//Delete all postss for a given account
-				for (Post post : arrOfPosts) {
-					if (post.getAuthor() == account)
-					{
-						post.setEmptyPost(); //TODO: this doesn't seem right? but i think will work ns if works with comments & endorsements.
-					}
-				}
-				//TODO: i think that this will not work on comments and endorsed posts as they wont be able to be put into the postArr in the account class.
+				return;
 			}
 		}
 		
@@ -115,78 +120,63 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public void removeAccount(String handle) throws HandleNotRecognisedException {
-		ArrayList<Account> accounts = this.arrOfActiveAccounts;
-
-		for (Account account : accounts) {
-			if (account.getHandle() == handle) // iterates through all accounts until the desired account is found
+		for (Account account : arrOfActiveAccounts) {
+			if (account.getHandle().equals(handle)) // iterates through all accounts until the desired account is found
 			{
-				arrOfActiveAccounts.remove(account);
-				arrOfDeactivatedAccounts.add(account);
+				//Delete all posts for a given account
+				for (Post post : account.getPosts()) {
+					post.setEmptyPost();
+				}
 				
-				for (Post post : arrOfPosts)
-				{
-					if (post.getAuthor() == account)
-						post.setEmptyPost(); //TODO: this doesn't seem right? but i think will work ns if works with comments & endorsements.
-					}
+				//TODO: What actually is an endorsed post? Is it just a normal post added to another list that tracks
+				//the specific posts a user has liked? If so, instead of setting the post to empty should I just
+				//be removing an endorsement from a post?
+
+				//Deletes all endorsed posts for a given account
+				for (EndorsedPost endorsedPost : account.getEndorsedPosts()) {
+					endorsedPost.setEmptyPost();
 				}
 
-				return;
-				//TODO: i think that this will not work on comments and endorsed posts as they wont be able to be put into the postArr in the account class.
-		}
+				//Deletes all comments for a given account
+				for (Comment comment : account.getComments()) {
+					comment.setEmptyPost();
+				}
 
-		throw new HandleNotRecognisedException();
+				arrOfActiveAccounts.remove(account);
+				arrOfDeactivatedAccounts.add(account);
+
+				return;
+			}
+		}
+		
+		throw new HandleNotRecognisedException("Account handle " + handle + " not found."); //if account not found
 
 	}
 
 	@Override
 	public void changeAccountHandle(String oldHandle, String newHandle) throws HandleNotRecognisedException, IllegalHandleException, InvalidHandleException {
-		ArrayList<Account> accounts = this.arrOfActiveAccounts;
-
-		for (Account account : accounts) {
-			if (account.getHandle() == oldHandle) // iterates through all accounts until the desired account is found
-			{
-				account.setHandle(newHandle);
-				return;
-			}
-		}
-
-		return new HandleNotRecognisedException();
+		Account account = getAccountObject(oldHandle); 
+		account.setHandle(newHandle); //changes handle from old one to new
 	}
 
 	@Override
 	public void updateAccountDescription(String handle, String description) throws HandleNotRecognisedException {
-		ArrayList<Account> accounts = this.arrOfActiveAccounts;
-
-		for (Account account : accounts) {
-			if (account.getHandle() == handle) // iterates through all accounts until the desired account is found
-			{
-				account.setDescription(description);
-				return;
-			}
-		}
-
-		return new HandleNotRecognisedException();
+		Account account = getAccountObject(handle);
+		account.setDescription(description); //updates description
 	}
 
 	@Override
 	public String showAccount(String handle) throws HandleNotRecognisedException {
-		List<Account> accounts = platform.getActiveAccounts();
+		Account account = getAccountObject(handle);
+		
+		int ID = account.getAccountID();
+		String desc = account.getDescription();
+		int PostCount = account.getPosts().size();
+		int EndorseCount = account.getNumEndorsements();
 
-		for (Account account : accounts) {
-			if (account.getHandle() == handle) // iterates through all accounts until the desired account is found
-			{
-				int ID = account.getAccountID();
-				String desc = account.getDescription();
-				int PostCount = account.GetPosts().size();
-				int EndorseCount = account.getEndorsements();
+		String accountDetails = String.format("ID: %d \nHandle: %s \nDescription: %s \nPost Count: %d \nEndorse Count: %d", ID, handle, desc, PostCount, EndorseCount);
 
-				String accountDetails = String.format("ID: %d \nHandle: %s \nDescription: %s \nPost Count: %d \nEndorse Count: %d", ID, handle, desc, PostCount, EndorseCount);
-
-				return accountDetails;
-			}
-		}
-
-		throw new HandleNotRecognisedException("Handle not recognised: " + handle);
+		return accountDetails;
 	}
 
 	/**
@@ -246,6 +236,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 		// create post object and append to arr of posts
 		Post postObject = new Post(author, message);
 		this.arrOfPosts.add(postObject);
+		author.addPost(postObject);
 
 		return postObject.getId();
 	}
@@ -392,11 +383,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 		}
 
 		this.arrOfEndorsedPosts.add(endorsedPostObject);
-		authorObject.addPost(endorsedPostObject); // TODO: (Luke??) check the author doesnt need individual arrays (this
-													// will be fixed if you use the arrays as i do) The way it is
-													// currently set up in your class cannot work as your class only
-													// accepts 1 type, whereas 3 post types are used (and 4 arrays are
-													// needed)
+		authorObject.addEndorsedPost(endorsedPostObject);
 
 		return endorsedPostObject.getId();
 	}
@@ -448,6 +435,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 		commentObject = new Comment(authorObject, postObject, message); // TODO: check this throws invalid post
 																		// exception when needed.
 		this.arrOfComments.add(commentObject);
+		authorObject.addComment(commentObject);
 
 		return commentObject.getId();
 	}
@@ -489,6 +477,9 @@ public class BadSocialMedia implements SocialMediaPlatform {
 		// not? I think not? I assumed not.
 		// arrOfPosts.remove(postObject)
 		arrOfEmptyPosts.add(postObject);
+
+		Account authorObject = postObject.getAuthor();
+		authorObject.removePost(postObject);
 	}
 
 	@Override
@@ -682,10 +673,8 @@ public class BadSocialMedia implements SocialMediaPlatform {
 		Account mostEndorsedAccount = null;
 		int numEndorsementsOfMaxAccount = 0;
 
-		ArrayList<Account> accounts = this.arrOfActiveAccounts;
-
-		for (Account account : accounts) {
-			if (account.getEndorsements() >= numEndorsementsOfMaxAccount) {
+		for (Account account : arrOfActiveAccounts) {
+			if (account.getNumEndorsements() >= numEndorsementsOfMaxAccount) {
 				mostEndorsedAccount = account;
 			}
 		}

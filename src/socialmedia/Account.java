@@ -6,7 +6,9 @@ public class Account {
     private int accountID;
     private String handle;
     private String description;
-    private ArrayList<Post> Posts = new ArrayList<Post>(0); //used to track which posts the author has for easy deletion (not sure if needed - TODO: double check)
+    private ArrayList<Post> Posts = new ArrayList<Post>(0); //used to track which posts the author has created
+    private ArrayList<Comment> Comments = new ArrayList<Comment>(0); 
+    private ArrayList<EndorsedPost> EndorsedPosts = new ArrayList<EndorsedPost>();
     private int numEndorsements = 0;
 
     public Account(int ID, String Username, String bio)
@@ -41,6 +43,21 @@ public class Account {
         this.description = newDescription;
     }
 
+    public void giveEndorsement()
+    {
+        this.numEndorsements = this.numEndorsements + 1; //increments number of endorsements
+    }
+
+    public int getNumEndorsements()
+    {
+        return this.numEndorsements;
+    }
+
+    public ArrayList<Post> getPosts()
+    {
+        return this.Posts;
+    }
+
     public void addPost(Post postObject) {
         Posts.add(postObject);
     }
@@ -49,32 +66,30 @@ public class Account {
         Posts.remove(postObject);
     }
 
-    public void deleteAccount(Platform platform)
+    public ArrayList<Comment> getComments()
     {
-        for (Post post : Posts)
-        {
-            //TODO: (luke) i deleted each post in the BadSocialMedia file, you need to write this same thing but in that file instead.
-            //Basically you need to retrieve your array of posts in this class, compare it to my (3?4?) arrays then call the 
-            // Delete post method in the badsocialmedia class where any matches are found
-            // if easier i can do this but we should meet to do this to make it easier.
-            //post.deletePost();
-        }
-
-        platform.addDeactivatedAccount(this);
-        platform.removeActiveAccount(this);
-        //^ this code doesnt make sense but my fault you did this i think i will explain :)
+        return this.Comments;
     }
 
-    public void giveEndorsement()
-    {
-        this.numEndorsements = this.numEndorsements + 1;
+    public void addComment(Comment commentObject) {
+        Comments.add(commentObject);
     }
 
-    public int getEndorsements()
-    {
-        return this.numEndorsements;
+    public void removeComment(Comment commentObject) {
+        Comments.remove(commentObject);
     }
 
-    //TODO: write function to delete account/all posts
+    public ArrayList<EndorsedPost> getEndorsedPosts()
+    {
+        return this.EndorsedPosts;
+    }
+
+    public void addEndorsedPost(EndorsedPost endorsedPostObject) {
+        EndorsedPosts.add(endorsedPostObject);
+    }
+
+    public void removeEndorsedPost(EndorsedPost endorsedPostObject) {
+        EndorsedPosts.remove(endorsedPostObject);
+    }
 
 }
