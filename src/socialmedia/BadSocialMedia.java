@@ -41,6 +41,19 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	//TODO: (ollie) i currently use 'arrayOfAccounts' where i should be using 'arrayOfActiveAccounts' in all post classes
 	@Override
 	public int createAccount(String handle) throws IllegalHandleException, InvalidHandleException {
+		
+		for (Account account : accounts) {
+			if (account.getHandle() == handle) // iterates through all accounts to check none of them have already used the handle
+			{
+				throw new IllegalHandleException("Illegal handle: " + handle); //an illegal handle is a handle already in use
+			}
+		}
+
+		if (handle.length() == 0 || handle.length() > 30 || handle.contains(" ")) //if the handle empty, too long or contains whitespace
+		{
+			throw new InvalidHandleException(); 
+		}
+		
 		int accountID = platform.getActiveAccounts().size() + platform.getDeactivatedAccounts().size(); // generates
 																										// unique
 																										// accountID
@@ -96,7 +109,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 				//TODO: i think that this will not work on comments and endorsed posts as they wont be able to be put into the postArr in the account class.
 			}
 		}
-
+		
 		throw new AccountIDNotRecognisedException("Account ID " + id + " not found."); //if account not found
 	}
 
@@ -116,9 +129,13 @@ public class BadSocialMedia implements SocialMediaPlatform {
 						post.setEmptyPost(); //TODO: this doesn't seem right? but i think will work ns if works with comments & endorsements.
 					}
 				}
+
+				return;
 				//TODO: i think that this will not work on comments and endorsed posts as they wont be able to be put into the postArr in the account class.
-			}
 		}
+
+		throw new HandleNotRecognisedException();
+
 	}
 
 	@Override
@@ -129,8 +146,11 @@ public class BadSocialMedia implements SocialMediaPlatform {
 			if (account.getHandle() == oldHandle) // iterates through all accounts until the desired account is found
 			{
 				account.setHandle(newHandle);
+				return;
 			}
 		}
+
+		return new HandleNotRecognisedException();
 	}
 
 	@Override
@@ -141,8 +161,11 @@ public class BadSocialMedia implements SocialMediaPlatform {
 			if (account.getHandle() == handle) // iterates through all accounts until the desired account is found
 			{
 				account.setDescription(description);
+				return;
 			}
 		}
+
+		return new HandleNotRecognisedException();
 	}
 
 	@Override
