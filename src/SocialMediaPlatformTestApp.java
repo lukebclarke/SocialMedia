@@ -103,6 +103,7 @@ public class SocialMediaPlatformTestApp {
 			int endorsedPostID = platform.endorsePost("my_handle", postID3);
 			assert (platform.getTotalEndorsmentPosts()) == 1
 					: "number of endorsed posts registered in the system does not match";
+				
 
 			platform.deletePost(endorsedPostID);
 			assert (platform.getTotalEndorsmentPosts()) == 0
@@ -132,7 +133,10 @@ public class SocialMediaPlatformTestApp {
 					: "number of endorsed posts registered in the system does not match";
 
 			platform.deletePost(postID5);
-			assert (platform.getTotalOriginalPosts()) == 0;
+			assert (platform.getTotalOriginalPosts()) == 0
+					: "number of original posts registered in the system does not match";
+			
+			platform.deletePost(endorsedPostId);
 			assert (platform.getTotalEndorsmentPosts()) == 0
 					: "number of endorsed posts registered in the system does not match";
 
@@ -229,7 +233,7 @@ public class SocialMediaPlatformTestApp {
 		} catch (PostIDNotRecognisedException e) {
 			assert (false) : "PostIDNotRecognisedException thrown incorrectly";
 		} catch (NotActionablePostException e) {
-			assert (false) : "NotActionablePostException thrown incorrectly";
+			assert (true);
 		}
 
 		// Try to endorse an empty post
@@ -252,7 +256,7 @@ public class SocialMediaPlatformTestApp {
 		} catch (PostIDNotRecognisedException e) {
 			assert (false) : "PostIDNotRecognisedException thrown incorrectly";
 		} catch (NotActionablePostException e) {
-			assert (false) : "NotActionablePostException thrown incorrectly";
+			assert (true);
 		}
 
 		// Try to delete an empty post
@@ -273,21 +277,16 @@ public class SocialMediaPlatformTestApp {
 		} catch (InvalidPostException e) {
 			assert (false) : "InvalidPostException thrown incorrectly";
 		} catch (PostIDNotRecognisedException e) {
-			assert (false) : "PostIDNotRecognisedException thrown incorrectly";
-		} // catch (NotActionablePostException e) {
-			// assert (false) : "NotActionablePostException thrown incorrectly";
-			// }
-			// TODO: (ollie) ^ i think this should be thrown? because i am deleting an empty
-			// post?
+			assert (true);
+		}
 
 		// Output a post as a string
 		try {
 			Integer postID = platform.createPost("my_handle", "Hello.");
 			assert (platform.getTotalOriginalPosts()) == 1 : "number of posts registered in the system does not match";
 
-			platform.showIndividualPost(postID);
-			assert (platform.showIndividualPost(postID)) == "ID: " + postID
-					+ "\n Account: my_handle\n No. endorsements: 0 | No. comments: 0\n Hello."
+			platform.showIndividualPost(postID);			
+			assert (platform.showIndividualPost(postID).equals("ID: " + postID + "\n Account: my_handle\n No. endorsements: 0 | No. comments: 0\n Hello.")) == true
 					: "message does not match inputs.";
 
 			platform.deletePost(postID);
@@ -313,8 +312,8 @@ public class SocialMediaPlatformTestApp {
 			Integer epID2 = platform.endorsePost("my_handle", postID);
 
 			platform.showIndividualPost(postID);
-			assert (platform.showIndividualPost(postID)) == "ID: " + postID
-					+ "\n Account: my_handle\n No. endorsements: 2 | No. comments: 2\n Hello."
+			assert (platform.showIndividualPost(postID).equals("ID: " + postID
+					+ "\n Account: my_handle\n No. endorsements: 2 | No. comments: 2\n Hello.")) == true
 					: "message does not match inputs.";
 
 			platform.deletePost(postID);
@@ -323,7 +322,7 @@ public class SocialMediaPlatformTestApp {
 			platform.deletePost(epID1);
 			assert (platform.getTotalEndorsmentPosts() == 1)
 					: "number of endorsed posts registered in the system does not match";
-			platform.deletePost(epID1);
+			platform.deletePost(epID2);
 			assert (platform.getTotalEndorsmentPosts() == 0)
 					: "number of endorsed posts registered in the system does not match";
 

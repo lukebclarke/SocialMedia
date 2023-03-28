@@ -1,7 +1,6 @@
 package socialmedia;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.ArrayList;
 
 /**
@@ -91,6 +90,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 			{
 				//Delete all posts for a given account
 				for (Post post : account.getPosts()) {
+					arrOfPosts.remove(post);
 					post.setEmptyPost();
 				}
 				
@@ -98,13 +98,17 @@ public class BadSocialMedia implements SocialMediaPlatform {
 				//the specific posts a user has liked? If so, instead of setting the post to empty should I just
 				//be removing an endorsement from a post?
 
-				//Deletes all endorsed posts for a given account
+				//An endorsed post is like a retweet. So you need to go through and set every endorsement to an empty post. 
+				//How you did it is good (with the bits i added where you remove the post from the arr too)
+
 				for (EndorsedPost endorsedPost : account.getEndorsedPosts()) {
+					arrOfEndorsedPosts.remove(endorsedPost);
 					endorsedPost.setEmptyPost();
 				}
 
 				//Deletes all comments for a given account
 				for (Comment comment : account.getComments()) {
+					arrOfComments.remove(comment);
 					comment.setEmptyPost();
 				}
 
@@ -125,6 +129,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 			{
 				//Delete all posts for a given account
 				for (Post post : account.getPosts()) {
+					arrOfPosts.remove(post);
 					post.setEmptyPost();
 				}
 				
@@ -132,13 +137,19 @@ public class BadSocialMedia implements SocialMediaPlatform {
 				//the specific posts a user has liked? If so, instead of setting the post to empty should I just
 				//be removing an endorsement from a post?
 
+				//An endorsed post is like a retweet. So you need to go through and set every endorsement to an empty post. 
+				//How you did it is good (with the bits i added where you remove the post from the arr too)
+				
+
 				//Deletes all endorsed posts for a given account
 				for (EndorsedPost endorsedPost : account.getEndorsedPosts()) {
+					arrOfEndorsedPosts.remove(endorsedPost);
 					endorsedPost.setEmptyPost();
 				}
 
 				//Deletes all comments for a given account
 				for (Comment comment : account.getComments()) {
+					arrOfComments.remove(comment);
 					comment.setEmptyPost();
 				}
 
@@ -312,7 +323,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	 * @return true if the post is empty, false otherwise.
 	 */
 	private boolean isPostEmpty(int postID) {
-		// TODO: (ollie) make more readable
+		// TODO: (ollie) make more readable should be called searchForEmptyPost.
 		Post postObject = searchForPost(postID);
 
 		if (postObject == null) {
@@ -443,13 +454,27 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	@Override
 	public void deletePost(int id) throws PostIDNotRecognisedException {
 		// (Ollie)
-		Post postObject = searchForPost(id);
+		// If the post is an empty post, say it is not found
+		if (isPostEmpty(id)) {
+			throw new PostIDNotRecognisedException("The post with ID: " + id + " was not found.");
+		}
 
+		Post postObject = searchForPost(id);
+		
 		// If a post with given ID is not found, search through all comments until the
 		// post width given id is found.
 		Comment commentObject = null;
 		if (postObject == null) {
 			commentObject = searchForComment(id);
+		}
+		else if (postObject != null) {
+			//Remove the post from an account's list of posts
+			Account authorObject = postObject.getAuthor();
+			authorObject.removePost(postObject);
+
+			// Turn the post into an empty post
+			postObject.setEmptyPost();
+			arrOfEmptyPosts.add(postObject);
 		}
 
 		// If a post with given ID is not found, search through all endorsed posts until
@@ -458,28 +483,30 @@ public class BadSocialMedia implements SocialMediaPlatform {
 		if (postObject == null && commentObject == null) {
 			endorsedPostObject = searchForEndorsedPost(id);
 		}
+		else if (commentObject != null){
+			//Remove the post from an account's list of posts
+			Account authorObject = commentObject.getAuthor();
+			authorObject.removeComment(commentObject);
+
+			// Turn the post into an empty post
+			commentObject.setEmptyPost();
+			arrOfEmptyPosts.add(commentObject);
+		}
 
 		// Throw exception if no post with the given id was found
 		if (postObject == null && commentObject == null && endorsedPostObject == null) {
 			throw new PostIDNotRecognisedException("The post with ID: " + id + " was not found.");
 		}
+		else if (endorsedPostObject != null) {
+			//Remove the post from an account's list of posts
+			Account authorObject = endorsedPostObject.getAuthor();
+			authorObject.removeEndorsedPost(endorsedPostObject);
 
-		// TODO: is this right or not? should i be searching for this post or no?
-		// If the post is an empty post, say it is not found
-		if (isPostEmpty(id)) {
-			throw new PostIDNotRecognisedException("The post with ID: " + id + " was not found.");
+			// Turn the post into an empty post
+			endorsedPostObject.setEmptyPost();
+			arrOfEmptyPosts.add(endorsedPostObject);
 		}
 
-		// Turn the post into an empty post
-		postObject.setEmptyPost();
-
-		// TODO: when a post of empty should it be removed from the list of posts or
-		// not? I think not? I assumed not.
-		// arrOfPosts.remove(postObject)
-		arrOfEmptyPosts.add(postObject);
-
-		Account authorObject = postObject.getAuthor();
-		authorObject.removePost(postObject);
 	}
 
 	@Override
@@ -516,8 +543,8 @@ public class BadSocialMedia implements SocialMediaPlatform {
 		Account author = postObject.getAuthor();
 
 		String postDetails = "ID: " + id + "\n Account: " + author.getHandle() + "\n No. endorsements: "
-				+ postObject.getNumberOfEndorsements() + " | " + postObject.getNumberOfComments() + "\n "
-				+ postObject.getMessage();
+				+ postObject.getNumberOfEndorsements() + " | " + "No. comments: " + postObject.getNumberOfComments()
+				+ "\n " + postObject.getMessage();
 		return postDetails;
 	}
 

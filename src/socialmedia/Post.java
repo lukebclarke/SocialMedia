@@ -5,7 +5,8 @@ import java.util.ArrayList;
 public class Post {
     private Account author;
     private String message;
-    private static int postID;
+    private static int nextPostID;
+    private int postID;
     private ArrayList<Comment> arrOfComments = new ArrayList<Comment>(0); 
     private ArrayList<EndorsedPost> arrOfEndorsements  = new ArrayList<EndorsedPost>(0);
 
@@ -22,10 +23,11 @@ public class Post {
         this.author = author;
         setMessage(message);
         author.addPost(this); //Add the post to the list of posts created by the author
-        isEmptyPost = false;
+        this.isEmptyPost = false;
         //Increment and set the post id. (this means the id will start from 1)
         //TODO: if the id somehow reaches 2147483648 the program will crash
-        postID++;
+        this.postID = nextPostID;
+        nextPostID++;
     }
 
     public Post(Account author, Post postObject) {
@@ -34,10 +36,11 @@ public class Post {
         addEndorseeHandleToMessage(author.getHandle());
 
         author.addPost(this); //Add the post to the list of posts created by the author
-        isEmptyPost = false;
+        this.isEmptyPost = false;
         //Increment and set the post id. (this means the id will start from 1)
         //TODO: if the id somehow reaches 2147483648 the program will crash
-        postID++;
+        this.postID = nextPostID;
+        nextPostID++;
     }
 
     public Account getAuthor() {
