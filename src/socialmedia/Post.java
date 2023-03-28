@@ -79,10 +79,9 @@ public class Post {
      * @outputs (String) if the message is greater than 100 characters long, a warning message is output to the console and the message is not set.
      */
     public void setMessage(String newMessage) throws InvalidPostException {
-        //TODO 'up to 100 characters' means less than 100? or <= 100 ?
-        if (newMessage.length() < 100) {
+        if (newMessage.length() <= 100) {
             message = newMessage;
-        } else if (newMessage.length() >= 100) {
+        } else if (newMessage.length() > 100) {
             throw new InvalidPostException("Post message contains: " + newMessage.length()
                     + " characters. Message can only contain up to 100 characters.");
         } else {

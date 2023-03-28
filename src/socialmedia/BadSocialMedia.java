@@ -602,18 +602,27 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 		// Calculate the spacing to the left of the message
 		String spacing = "";
+		String idSpacing = "";
 		for (int i = 0; i < commentLevel; i++) {
 			spacing += "    ";
+
+			if (i > 0) {
+				idSpacing += "    ";
+			}
 		}
 
 		// Add to the string to return the comment of which this function was called by
 		Account author = commentObject.getAuthor();
+		String handle = (!commentObject.isEmptyPost()) ? author.getHandle() : "N/A";
+		Integer commentId = commentObject.getId();
+		Integer numEndorsements = commentObject.getNumberOfEndorsements();
+		Integer numComments = commentObject.getNumberOfComments();
+		String message = commentObject.getMessage();
 
-		stringToReturn += "\n" + "| > ID: " + commentObject.getId()
-				+ "\n " + spacing + "Account: " + author.getHandle()
-				+ "\n " + spacing + "No. endorsements: " + commentObject.getNumberOfEndorsements() + " | "
-				+ commentObject.getNumberOfComments()
-				+ "\n " + spacing + commentObject.getMessage();
+		stringToReturn += String.format("\n " + idSpacing + "| > ID: %d"
+				+ "\n " + spacing + "Account: %s"
+				+ "\n " + spacing + "No. endorsements: %d | No. comments: %d"
+				+ "\n " + spacing + "%s", commentId, handle, numEndorsements, numComments, message);
 
 		// Call this function again for any further comments on this comment post.
 		for (int i = 0; i < arrOfComments.size(); i++) {

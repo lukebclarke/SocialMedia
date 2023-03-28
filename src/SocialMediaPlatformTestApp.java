@@ -358,6 +358,120 @@ public class SocialMediaPlatformTestApp {
 			assert (false) : "NotActionablePostException thrown incorrectly";
 		}
 
+		//Create a post with message length greater than 100 characters
+		try {
+			Integer postID = platform.createPost("my_handle",
+					"mqqlkaifyqrixjordaaorufwiruuvtkewyvsadjepnoexviwoppksspszmuehcblosibmgiqocwzksnhrlgqjqhgajuxfwrqixmjb");
+			assert (platform.getTotalOriginalPosts()) == 0 : "number of posts registered in the system does not match";
+
+		} catch (HandleNotRecognisedException e) {
+			assert (false) : "HandleNotRecognisedException thrown incorrectly";
+		} catch (InvalidPostException e) {
+			assert (true);
+		}
+
+		//Create a post with a message length of 0 characters
+		try {
+			Integer postID = platform.createPost("my_handle", "");
+			assert (platform.getTotalOriginalPosts()) == 0 : "number of posts registered in the system does not match";
+
+		} catch (HandleNotRecognisedException e) {
+			assert (false) : "HandleNotRecognisedException thrown incorrectly";
+		} catch (InvalidPostException e) {
+			assert (true);
+		}
+
+		//Create a message of length 1 char
+		try {
+			Integer postID = platform.createPost("my_handle", "1");
+			assert (platform.getTotalOriginalPosts()) == 1 : "number of posts registered in the system does not match";
+
+		} catch (HandleNotRecognisedException e) {
+			assert (false) : "HandleNotRecognisedException thrown incorrectly";
+		} catch (InvalidPostException e) {
+			assert (false) : "InvalidPostException thrown incorrectly";
+		}
+
+		//Create a message of length 100 chars
+		try {
+			Integer postID = platform.createPost("my_handle",
+					"ntkfdnzeuygzhcjmgsxzqiadunpwaljcgxfhtlwoyxobiunqucrnmtuuikodoqmkbjhsfwhbgcjvyputfevipftvxfrbkqivkrfv");
+			assert (platform.getTotalOriginalPosts()) == 2 : "number of posts registered in the system does not match";
+
+		} catch (HandleNotRecognisedException e) {
+			assert (false) : "HandleNotRecognisedException thrown incorrectly";
+		} catch (InvalidPostException e) {
+			assert (false) : "InvalidPostException thrown incorrectly";
+		}
+
+		//Create a post tree containing 1 post and 1 comment
+		//Create a post tree containing a post, 3 level 1 comments, each has 1 level 2 comment. Endorse each post once. Delete one of the level 1 comments.
+		try{
+			Integer postID1 = platform.createPost("my_handle", "post1");
+			assert (platform.getTotalOriginalPosts()) == 3 : "Number of original posts in the platform does not match";
+
+			Integer commentID1 = platform.commentPost("my_handle", postID1, "acc1 comment");
+			assert (platform.getTotalCommentPosts()) == 1 : "Number of comments in the platform does not match";
+
+			//Integer commentID2 = platform.commentPost("my_handle", commentID1, "comment 2 msg");
+
+			System.out.println(platform.showPostChildrenDetails(postID1));
+
+			
+
+
+		} catch (HandleNotRecognisedException e) {
+			assert (false) : "HandleNotRecognisedException thrown incorrectly";
+		} catch (InvalidPostException e) {
+			assert (false) : "InvalidPostException thrown incorrectly";
+		} catch (PostIDNotRecognisedException e) {
+			assert (false) : "PostIDNotRecognisedException thrown incorrectly";
+		} catch (NotActionablePostException e) {
+			assert (false) : "NotActionablePostException thrown incorrectly";
+		}
+
+		//Create a post tree containing a post, 3 level 1 comments, each has 1 level 2 comment. Endorse each post once. Delete one of the level 1 comments.
+		// try{
+		// 	Integer accountID1 = platform.createAccount("acc1");
+		// 	Integer accountID2 = platform.createAccount("acc2");
+		// 	Integer accountID3 = platform.createAccount("acc3");
+		// 	assert (platform.getNumberOfAccounts()) == 4 : "Number of accounts in the platform does not match";
+
+		// 	Integer postID10 = platform.createPost("acc1", "post1");
+		// 	Integer postID11 = platform.createPost("acc2", "post2");
+		// 	Integer postID12 = platform.createPost("acc3", "post3");
+		// 	assert (platform.getTotalOriginalPosts()) == 6 : "Number of original posts in the platform does not match";
+
+		// 	Integer commentID1 = platform.commentPost("acc1", postID12, "acc1 comment");
+		// 	Integer commentID2 = platform.commentPost("acc2", postID11, "acc1 comment");
+		// 	Integer commentID3 = platform.commentPost("acc3", postID10, "acc1 comment");
+		// 	Integer commentID4 = platform.commentPost("acc1", commentID2, "acc1 comment");
+		// 	Integer commentID5 = platform.commentPost("acc2", commentID3, "acc1 comment");
+		// 	Integer commentID6 = platform.commentPost("acc3", commentID1, "acc1 comment");
+		// 	assert (platform.getTotalCommentPosts()) == 7 : "Number of comments in the platform does not match";
+
+		// 	platform.deletePost(commentID3);
+		// 	assert (platform.getTotalCommentPosts()) == 6 : "Number of comments in the platform does not match";
+
+		// 	System.out.println(platform.showPostChildrenDetails(postID10));
+
+			
+
+
+		// } catch (HandleNotRecognisedException e) {
+		// 	assert (false) : "HandleNotRecognisedException thrown incorrectly";
+		// } catch (InvalidPostException e) {
+		// 	assert (false) : "InvalidPostException thrown incorrectly";
+		// } catch (PostIDNotRecognisedException e) {
+		// 	assert (false) : "PostIDNotRecognisedException thrown incorrectly";
+		// } catch (NotActionablePostException e) {
+		// 	assert (false) : "NotActionablePostException thrown incorrectly";
+		// } catch (IllegalHandleException e) {
+		// 	assert (false) : "IllegalHandleException thrown incorrectly";
+		// } catch (InvalidHandleException e) {
+		// 	assert (false) : "InvalidHandleException thrown incorrectly";
+		// }
 	}
+
 
 }
