@@ -37,6 +37,21 @@ public class SocialMediaPlatformTestApp {
 		assert (platform.getTotalCommentPosts() == 0) : "Innitial SocialMediaPlatform not empty as required.";
 		assert (platform.getTotalEndorsmentPosts() == 0) : "Innitial SocialMediaPlatform not empty as required.";
 
+		//Test the platform after initialization
+		testPlatform(platform);
+
+		//Erase the platform and re-test it.
+		platform.erasePlatform();
+		testPlatform(platform);
+
+		//Save the platform, erase the current platform, load the new platform and test it again.
+		// platform.savePlatform("test_platform");
+		// platform.erasePlatform();
+		// platform.loadPlatform("test_platform");
+
+	}
+	
+	private static void testPlatform(SocialMediaPlatform platform) {
 		Integer id;
 		try {
 			id = platform.createAccount("my_handle");
@@ -103,7 +118,6 @@ public class SocialMediaPlatformTestApp {
 			int endorsedPostID = platform.endorsePost("my_handle", postID3);
 			assert (platform.getTotalEndorsmentPosts()) == 1
 					: "number of endorsed posts registered in the system does not match";
-				
 
 			platform.deletePost(endorsedPostID);
 			assert (platform.getTotalEndorsmentPosts()) == 0
@@ -135,7 +149,7 @@ public class SocialMediaPlatformTestApp {
 			platform.deletePost(postID5);
 			assert (platform.getTotalOriginalPosts()) == 0
 					: "number of original posts registered in the system does not match";
-			
+
 			platform.deletePost(endorsedPostId);
 			assert (platform.getTotalEndorsmentPosts()) == 0
 					: "number of endorsed posts registered in the system does not match";
@@ -285,8 +299,9 @@ public class SocialMediaPlatformTestApp {
 			Integer postID = platform.createPost("my_handle", "Hello.");
 			assert (platform.getTotalOriginalPosts()) == 1 : "number of posts registered in the system does not match";
 
-			platform.showIndividualPost(postID);			
-			assert (platform.showIndividualPost(postID).equals("ID: " + postID + "\n Account: my_handle\n No. endorsements: 0 | No. comments: 0\n Hello.")) == true
+			platform.showIndividualPost(postID);
+			assert (platform.showIndividualPost(postID).equals(
+					"ID: " + postID + "\n Account: my_handle\n No. endorsements: 0 | No. comments: 0\n Hello.")) == true
 					: "message does not match inputs.";
 
 			platform.deletePost(postID);

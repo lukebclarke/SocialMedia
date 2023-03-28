@@ -197,10 +197,8 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	 *                              to 100 characters
 	 */
 	private boolean isMessageOfCorrectLength(String message) throws InvalidPostException {
-		// TODO 'up to 100 characters' means less than 100? or <= 100 ?
-		// TODO: does the 100 characters include the handle? I assumed not.
 		// TODO: never returns false.
-		if (message.length() >= 100) {
+		if (message.length() > 100) {
 			throw new InvalidPostException("Post message contains: " + message.length()
 					+ " characters. Message can only contain up to 100 characters.");
 		} else if (message.length() == 0) {
@@ -711,8 +709,15 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public void erasePlatform() {
-		// TODO Auto-generated method stub
+		// Ollie
+		//TODO: this is a terrible way of erasing the platform as all old data remains but it should work.
+		this.arrOfPosts  = new ArrayList<Post>(0);
+		this.arrOfEndorsedPosts = new ArrayList<EndorsedPost>(0);
+		this.arrOfComments = new ArrayList<Comment>(0);
+		this.arrOfEmptyPosts = new ArrayList<Post>(0);
 
+		this.arrOfActiveAccounts = new ArrayList<Account>(0);
+		this.arrOfDeactivatedAccounts = new ArrayList<Account>(0);
 	}
 
 	@Override
