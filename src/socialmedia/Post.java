@@ -67,6 +67,10 @@ public class Post {
         return arrOfEndorsements.size();
     }
 
+    public ArrayList<EndorsedPost> getArrayOfEndorsements() {
+        return this.arrOfEndorsements;
+    }
+
     public void setAuthor(Account newAuthor) {
         author = newAuthor;
         //TODO: validate
@@ -93,6 +97,7 @@ public class Post {
         this.author = null;
         this.message = "The original content was removed from the system and is no longer available.";
         this.isEmptyPost = true;
+        this.arrOfEndorsements  = new ArrayList<EndorsedPost>(0);
     }
 
     public void setPostId(int newPostId) {

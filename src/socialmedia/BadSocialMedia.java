@@ -384,7 +384,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 		}
 
 		// create an endorsed post object and append to arr of posts
-		if (authorObject != null) {
+		if (postObject != null) {
 			endorsedPostObject = new EndorsedPost(authorObject, postObject);
 		}
 		else if (commentObject != null) {
@@ -459,6 +459,8 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 		Post postObject = searchForPost(id);
 		
+		ArrayList<EndorsedPost> arrOfPostEndorsements  = new ArrayList<EndorsedPost>(0);
+
 		// If a post with given ID is not found, search through all comments until the
 		// post width given id is found.
 		Comment commentObject = null;
@@ -469,6 +471,9 @@ public class BadSocialMedia implements SocialMediaPlatform {
 			//Remove the post from an account's list of posts
 			Account authorObject = postObject.getAuthor();
 			authorObject.removePost(postObject);
+
+			//Get an array of endorsements for this post.
+			arrOfPostEndorsements = postObject.getArrayOfEndorsements();
 
 			// Turn the post into an empty post
 			postObject.setEmptyPost();
@@ -486,6 +491,9 @@ public class BadSocialMedia implements SocialMediaPlatform {
 			Account authorObject = commentObject.getAuthor();
 			authorObject.removeComment(commentObject);
 
+			//Get an array of endorsements for this post.
+			arrOfPostEndorsements = commentObject.getArrayOfEndorsements();
+
 			// Turn the post into an empty post
 			commentObject.setEmptyPost();
 			arrOfEmptyPosts.add(commentObject);
@@ -500,9 +508,17 @@ public class BadSocialMedia implements SocialMediaPlatform {
 			Account authorObject = endorsedPostObject.getAuthor();
 			authorObject.removeEndorsedPost(endorsedPostObject);
 
+			//Get an array of endorsements for this post.
+			arrOfPostEndorsements = endorsedPostObject.getArrayOfEndorsements();
+
 			// Turn the post into an empty post
 			endorsedPostObject.setEmptyPost();
 			arrOfEmptyPosts.add(endorsedPostObject);
+		}
+
+		//Remove all endorsements for this post.
+		for (EndorsedPost epObject : arrOfPostEndorsements) {
+			arrOfEndorsedPosts.remove(epObject);
 		}
 
 	}
@@ -511,6 +527,14 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	public String showIndividualPost(int id) throws PostIDNotRecognisedException {
 		// (Ollie)
 		// Check the id is valid, and get the post object.
+		//Initaalize variables
+		Account author = null;
+		String handle = null;
+		Integer commentId = null;
+		Integer numEndorsements = null;
+		Integer numComments = null;
+		String message = null;
+
 		// Search through all posts until the post with the given ID is found
 		Post postObject = searchForPost(id);
 
@@ -520,6 +544,13 @@ public class BadSocialMedia implements SocialMediaPlatform {
 		if (postObject == null) {
 			commentObject = searchForComment(id);
 
+		} else {
+			author = postObject.getAuthor();
+			handle = (!postObject.isEmptyPost()) ? author.getHandle() : "";
+			commentId = postObject.getId();
+			numEndorsements = postObject.getNumberOfEndorsements();
+			numComments = postObject.getNumberOfComments();
+			message = postObject.getMessage();
 		}
 
 		// If a post with given ID is not found, search through all endorsed posts until
@@ -527,6 +558,14 @@ public class BadSocialMedia implements SocialMediaPlatform {
 		EndorsedPost endorsedPostObject = null;
 		if (postObject == null && commentObject == null) {
 			endorsedPostObject = searchForEndorsedPost(id);
+		} 
+		else if(commentObject != null)  {
+			author = commentObject.getAuthor();
+			handle = (!commentObject.isEmptyPost()) ? author.getHandle() : "";
+			commentId = commentObject.getId();
+			numEndorsements = commentObject.getNumberOfEndorsements();
+			numComments = commentObject.getNumberOfComments();
+			message = commentObject.getMessage();
 		}
 
 		// TODO: should i be checking for empty posts? Right now it will display empty
@@ -535,14 +574,19 @@ public class BadSocialMedia implements SocialMediaPlatform {
 		// Throw exception if a post with the given id was not found.
 		if (postObject == null && commentObject == null && endorsedPostObject == null) {
 			throw new PostIDNotRecognisedException("The post with ID: " + id + " was not found.");
+		} else if(endorsedPostObject != null) {
+			author = endorsedPostObject.getAuthor();
+			handle = (!endorsedPostObject.isEmptyPost()) ? author.getHandle() : "";
+			commentId = endorsedPostObject.getId();
+			numEndorsements = endorsedPostObject.getNumberOfEndorsements();
+			numComments = endorsedPostObject.getNumberOfComments();
+			message = endorsedPostObject.getMessage();
 		}
 
-		// Get the author of the post
-		Account author = postObject.getAuthor();
-
-		String postDetails = "ID: " + id + "\n Account: " + author.getHandle() + "\n No. endorsements: "
-				+ postObject.getNumberOfEndorsements() + " | " + "No. comments: " + postObject.getNumberOfComments()
-				+ "\n " + postObject.getMessage();
+		String postDetails = String.format("ID: %d"
+			+ "\n " + "Account: %s"
+			+ "\n " + "No. endorsements: %d | No. comments: %d"
+			+ "\n " + "%s", commentId, handle, numEndorsements, numComments, message);
 		return postDetails;
 	}
 
@@ -609,7 +653,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 		// Add to the string to return the comment of which this function was called by
 		Account author = commentObject.getAuthor();
-		String handle = (!commentObject.isEmptyPost()) ? author.getHandle() : "N/A";
+		String handle = (!commentObject.isEmptyPost()) ? author.getHandle() : "";
 		Integer commentId = commentObject.getId();
 		Integer numEndorsements = commentObject.getNumberOfEndorsements();
 		Integer numComments = commentObject.getNumberOfComments();

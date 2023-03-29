@@ -98,7 +98,7 @@ public class SocialMediaPlatformTestApp {
 			assert (false) : "AccountIDNotRecognizedException thrown incorrectly";
 		}
 
-		// Create a new account to use in future tests
+		// // Create a new account to use in future tests
 		try {
 			id = platform.createAccount("my_handle");
 			assert (platform.getNumberOfAccounts() == 1) : "number of accounts registered in the system does not match";
@@ -109,8 +109,8 @@ public class SocialMediaPlatformTestApp {
 			assert (false) : "InvalidHandleException thrown incorrectly";
 		}
 
-		// Create a post then endorse that post, delete the endorsed post and the
-		// original post
+		// // Create a post then endorse that post, delete the endorsed post and the
+		// // original post
 		Integer postID3;
 		try {
 			postID3 = platform.createPost("my_handle", "You Too.");
@@ -151,15 +151,12 @@ public class SocialMediaPlatformTestApp {
 			assert (platform.getTotalOriginalPosts()) == 0
 					: "number of original posts registered in the system does not match";
 
-			platform.deletePost(endorsedPostId);
-			assert (platform.getTotalEndorsmentPosts()) == 0
-					: "number of endorsed posts registered in the system does not match";
-
 		} catch (HandleNotRecognisedException e) {
 			assert (false) : "HandleNotRecognisedException thrown incorrectly";
 		} catch (InvalidPostException e) {
 			assert (false) : "InvalidPostException thrown incorrectly";
 		} catch (PostIDNotRecognisedException e) {
+			System.out.println(e);
 			assert (false) : "PostIDNotRecognisedException thrown incorrectly";
 		} catch (NotActionablePostException e) {
 			assert (false) : "NotActionablePostException thrown incorrectly";
@@ -334,11 +331,6 @@ public class SocialMediaPlatformTestApp {
 
 			platform.deletePost(postID);
 			assert (platform.getTotalOriginalPosts()) == 0 : "number of posts registered in the system does not match";
-
-			platform.deletePost(epID1);
-			assert (platform.getTotalEndorsmentPosts() == 1)
-					: "number of endorsed posts registered in the system does not match";
-			platform.deletePost(epID2);
 			assert (platform.getTotalEndorsmentPosts() == 0)
 					: "number of endorsed posts registered in the system does not match";
 
@@ -350,6 +342,7 @@ public class SocialMediaPlatformTestApp {
 					: "number of endorsed posts registered in the system does not match";
 
 		} catch (PostIDNotRecognisedException e) {
+			System.out.println(e);
 			assert (false) : "PostIDNotRecognisedException thrown incorrectly";
 		} catch (HandleNotRecognisedException e) {
 			assert (false) : "HandleNotRecognisedException thrown incorrectly";
@@ -405,17 +398,33 @@ public class SocialMediaPlatformTestApp {
 			assert (false) : "InvalidPostException thrown incorrectly";
 		}
 
-		// Create a post tree containing 1 post and 1 comment
-		// Create a post tree containing a post, 3 level 1 comments, each has 1 level 2
-		// comment. Endorse each post once. Delete one of the level 1 comments.
+		// Create a post, with 3 level 1 comments, with 3 level 1 comments, 2 level 2 comments and 1 level 3 comment
+		// Check the output tree is correct.
 		try {
-			Integer postID1 = platform.createPost("my_handle", "post1");
-			assert (platform.getTotalOriginalPosts()) == 3 : "Number of original posts in the platform does not match";
+			platform.erasePlatform();
+			Integer accountID1 = platform.createAccount("testAcc1", "my bio");
+			Integer accountID2 = platform.createAccount("testAcc2", "a bio");
+			Integer accountID3 = platform.createAccount("testAcc3", "the bio");
+			Integer accountID4 = platform.createAccount("testAcc4", "no bio");
+			Integer accountID5 = platform.createAccount("testAcc5", "what is this?");
+			assert (platform.getNumberOfAccounts()) == 5 : "Number of original posts in the platform does not match";
 
-			Integer commentID1 = platform.commentPost("my_handle", postID1, "acc1 comment");
-			Integer commentID2 = platform.commentPost("my_handle", commentID1, "comment 2 msg");
-			Integer commentID3 = platform.commentPost("my_handle", commentID2, "comment 3 msg");
-			assert (platform.getTotalCommentPosts()) == 3 : "Number of comments in the platform does not match";
+			Integer postID1 = platform.createPost("testAcc1", "post1");
+			assert (platform.getTotalOriginalPosts()) == 1 : "Number of original posts in the platform does not match";
+
+			Integer commentID1 = platform.commentPost("testAcc2", postID1, "comment 1 msg");
+			Integer commentID2 = platform.commentPost("testAcc3", postID1, "comment 2 msg");
+			Integer commentID3 = platform.commentPost("testAcc4", postID1, "comment 3 msg");
+			Integer commentID4 = platform.commentPost("testAcc1", commentID1, "comment 4 msg");
+			Integer commentID5 = platform.commentPost("testAcc1", commentID2, "comment 5 msg");
+			Integer commentID6 = platform.commentPost("testAcc5", commentID3, "comment 6 msg");
+			Integer commentID7 = platform.commentPost("testAcc4", commentID5, "comment 7 msg");
+			Integer commentID8 = platform.commentPost("testAcc1", commentID6, "comment 8 msg");
+			Integer commentID9 = platform.commentPost("testAcc5", commentID8, "comment 9 msg");
+			assert (platform.getTotalCommentPosts()) == 9 : "Number of comments in the platform does not match";
+
+			//System.out.println(platform.showPostChildrenDetails(postID1));
+
 
 		} catch (HandleNotRecognisedException e) {
 			assert (false) : "HandleNotRecognisedException thrown incorrectly";
@@ -425,6 +434,10 @@ public class SocialMediaPlatformTestApp {
 			assert (false) : "PostIDNotRecognisedException thrown incorrectly";
 		} catch (NotActionablePostException e) {
 			assert (false) : "NotActionablePostException thrown incorrectly";
+		} catch (IllegalHandleException e) {
+			assert (false) : "IllegalHandleException thrown incorrectly";
+		} catch (InvalidHandleException e) {
+			assert (false) : "InvalidHandleException thrown incorrectly";
 		}
 
 		
@@ -449,10 +462,13 @@ public class SocialMediaPlatformTestApp {
 			Integer commentID6 = platform.commentPost("acc3", commentID1, "acc1 comment 6");
 			assert (platform.getTotalCommentPosts()) == 6 : "Number of comments in the platform does not match";
 
+			Integer endorsedPostID2 = platform.endorsePost("acc2", commentID3);
+			Integer endorsedPostID1 = platform.endorsePost("acc2", commentID3);
+
 			platform.deletePost(commentID3);
 			assert (platform.getTotalCommentPosts()) == 5 : "Number of comments in the platform does not match";
 
-			System.out.println(platform.showPostChildrenDetails(postID1));
+			//System.out.println(platform.showPostChildrenDetails(postID1));
 
 		} catch (HandleNotRecognisedException e) {
 		assert (false) : "HandleNotRecognisedException thrown incorrectly";
