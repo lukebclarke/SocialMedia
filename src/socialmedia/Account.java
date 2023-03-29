@@ -11,6 +11,13 @@ public class Account {
     private ArrayList<EndorsedPost> EndorsedPosts = new ArrayList<EndorsedPost>();
     private int numEndorsements = 0;
 
+    /**<p>Creates a new instance of the Account class.</p>
+     * 
+     * Parameters:
+     * ID: The ID of the account to be created
+     * Username (String): The handle of the account
+     * bio (String): The bio of the new account
+    */
     public Account(int ID, String Username, String bio)
     {
         this.accountID = ID;

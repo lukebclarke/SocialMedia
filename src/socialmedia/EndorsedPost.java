@@ -1,12 +1,20 @@
 package socialmedia;
 
 public class EndorsedPost extends Post {
+    private Post postObject;
+
     public EndorsedPost(Account authorObject, Post postObject) {
         //Call Post constructor
         super(authorObject, postObject);
+        this.postObject = postObject;
 
         //Change the post message to include handle of user to endorse
         postObject.addEndorsedPost(this);
+    }
+
+    public Post getParentPost()
+    {
+        return postObject;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package socialmedia;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -771,8 +772,47 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public void savePlatform(String filename) throws IOException {
-		// TODO Auto-generated method stub
+		FileWriter myWriter = new FileWriter(filename);
 
+		myWriter.write("Active accounts: ");
+		for (Account account : arrOfActiveAccounts) //writes all info about each active account
+		{
+			myWriter.write(account.getAccountID());
+			myWriter.write(account.getHandle());
+			myWriter.write(account.getDescription());
+			myWriter.write("");
+		}
+
+		myWriter.write("Posts:");
+		for (Post post : arrOfPosts) //writes all info about each active account
+		{
+			myWriter.write(post.getId());
+			myWriter.write(post.getAuthor().getHandle()); //prints handle of author
+			myWriter.write(post.getMessage());
+			myWriter.write("");
+		}
+
+		//prints details about all the comments under the relevant post
+		myWriter.write("Comments:");
+		for (Comment comment : arrOfComments)
+		{
+			myWriter.write(comment.getId());
+			myWriter.write(comment.getParentPost().getId()); //prints ID of post that the comment is under
+			myWriter.write(comment.getAuthor().getHandle()); //prints handle of author
+			myWriter.write(comment.getMessage());
+			myWriter.write("");
+		}
+
+		myWriter.write("Endorsements:");
+		for (EndorsedPost endorsement : arrOfEndorsedPosts)
+			{
+				myWriter.write(endorsement.getId());
+				myWriter.write(endorsement.getParentPost().getId());  //prints ID of post that the endorsement is given to
+				myWriter.write(endorsement.getAuthor().getHandle());
+				myWriter.write("");
+			}
+
+		myWriter.close();
 	}
 
 	@Override
