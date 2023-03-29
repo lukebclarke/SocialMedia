@@ -1,8 +1,11 @@
 package socialmedia;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * BadSocialMedia is a minimally compiling, but non-functioning implementor of
@@ -774,51 +777,158 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	public void savePlatform(String filename) throws IOException {
 		FileWriter myWriter = new FileWriter(filename);
 
-		myWriter.write("Active accounts: ");
 		for (Account account : arrOfActiveAccounts) //writes all info about each active account
 		{
-			myWriter.write(account.getAccountID());
+			myWriter.write("Account");
 			myWriter.write(account.getHandle());
 			myWriter.write(account.getDescription());
 			myWriter.write("");
 		}
 
-		myWriter.write("Posts:");
 		for (Post post : arrOfPosts) //writes all info about each active account
 		{
-			myWriter.write(post.getId());
+			myWriter.write("Post");
 			myWriter.write(post.getAuthor().getHandle()); //prints handle of author
 			myWriter.write(post.getMessage());
 			myWriter.write("");
 		}
 
 		//prints details about all the comments under the relevant post
-		myWriter.write("Comments:");
 		for (Comment comment : arrOfComments)
 		{
-			myWriter.write(comment.getId());
-			myWriter.write(comment.getParentPost().getId()); //prints ID of post that the comment is under
+			myWriter.write("Comment");
 			myWriter.write(comment.getAuthor().getHandle()); //prints handle of author
+			myWriter.write(comment.getParentPost().getId()); //prints ID of post that the comment is under
 			myWriter.write(comment.getMessage());
 			myWriter.write("");
 		}
 
-		myWriter.write("Endorsements:");
 		for (EndorsedPost endorsement : arrOfEndorsedPosts)
-			{
-				myWriter.write(endorsement.getId());
-				myWriter.write(endorsement.getParentPost().getId());  //prints ID of post that the endorsement is given to
-				myWriter.write(endorsement.getAuthor().getHandle());
-				myWriter.write("");
-			}
+		{
+			myWriter.write("EndorsedPost");
+			myWriter.write(endorsement.getAuthor().getHandle());
+			myWriter.write(endorsement.getParentPost().getId());  //prints ID of post that the endorsement is given to
+			myWriter.write("");
+		}
 
+		myWriter.write("END");
 		myWriter.close();
 	}
 
 	@Override
 	public void loadPlatform(String filename) throws IOException, ClassNotFoundException {
-		// TODO Auto-generated method stub
+		BufferedReader reader = new BufferedReader(new FileReader(filename));
+    	String line;
 
+		ArrayList<String> categories = new ArrayList<>(Arrays.asList("Account", "Post", "Comment", "EndorsedPost"));
+		
+		while ((line = reader.readLine()) != "END") {
+			if ((line = reader.readLine()).equals("Account")) //for reading account details
+			{
+				ArrayList<String> accountFields = new ArrayList<String>();
+
+				while (!(line = reader.readLine()).isBlank()) //reads every line under each account
+				{
+					accountFields.add(line); 
+				}
+
+				try
+				{
+					createAccount(accountFields.get(0), accountFields.get(1));
+				}
+				catch (IllegalHandleException e)
+				{
+					e.printStackTrace();
+				}
+				catch (InvalidHandleException e)
+				{
+					e.printStackTrace();
+				}
+				
+		}
+
+			if ((line = reader.readLine()).equals("Post")) //for reading post details
+			{
+				ArrayList<String> postFields = new ArrayList<String>();
+
+				while (!(line = reader.readLine()).isBlank()) //reads every line under each account
+				{
+					postFields.add(line);
+				}
+				
+				try
+				{
+					createPost(postFields.get(0), postFields.get(1)); //creates new post
+				}
+				catch (HandleNotRecognisedException e)
+				{
+					e.printStackTrace();
+				}
+				catch (InvalidPostException e)
+				{
+					e.printStackTrace();
+				}
+				
+			}
+
+			if ((line = reader.readLine()).equals("Comment")) //for reading post details
+			{
+				ArrayList<String> commentFields = new ArrayList<String>();
+
+				while (!(line = reader.readLine()).isBlank()) //reads every line under each account
+				{
+					commentFields.add(line);
+				}
+
+				try
+				{
+					commentPost(commentFields.get(0), Integer.parseInt(commentFields.get(1)), commentFields.get(2));
+				}
+				catch (PostIDNotRecognisedException e)
+				{
+					e.printStackTrace();
+				}
+				catch (HandleNotRecognisedException e)
+				{
+					e.printStackTrace();
+				}
+				catch (NotActionablePostException e)
+				{
+					e.printStackTrace();
+				}
+				catch (InvalidPostException e)
+				{
+					e.printStackTrace();
+				}
+				
+			}
+
+			if ((line = reader.readLine()).equals("EndorsedPost")) //for reading post details
+			{
+				ArrayList<String> endorseFields = new ArrayList<String>();
+
+				while (!(line = reader.readLine()).isBlank()) //reads every line under each account
+				{
+					endorseFields.add(line);
+				}
+
+				try
+				{
+					endorsePost(endorseFields.get(0), Integer.parseInt(endorseFields.get(1)));
+				}
+				catch (PostIDNotRecognisedException e)
+				{
+					e.printStackTrace();
+				}
+				catch (HandleNotRecognisedException e)
+				{
+					e.printStackTrace();
+				}
+				catch (NotActionablePostException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
 	}
-
 }

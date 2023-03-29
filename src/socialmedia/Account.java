@@ -11,6 +11,8 @@ public class Account {
     private ArrayList<EndorsedPost> EndorsedPosts = new ArrayList<EndorsedPost>();
     private int numEndorsements = 0;
 
+    //TODO: Change how account IDs are made
+    
     /**<p>Creates a new instance of the Account class.</p>
      * 
      * Parameters:
