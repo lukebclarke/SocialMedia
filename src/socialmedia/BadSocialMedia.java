@@ -775,7 +775,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public void savePlatform(String filename) throws IOException {
-		FileWriter myWriter = new FileWriter(filename);
+		FileWriter myWriter = new FileWriter(filename + ".txt");
 
 		for (Account account : arrOfActiveAccounts) //writes all info about each active account
 		{
@@ -817,7 +817,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public void loadPlatform(String filename) throws IOException, ClassNotFoundException {
-		BufferedReader reader = new BufferedReader(new FileReader(filename));
+		BufferedReader reader = new BufferedReader(new FileReader(filename + ".txt"));
     	String line;
 
 		while ((line = reader.readLine()) != "END") {
