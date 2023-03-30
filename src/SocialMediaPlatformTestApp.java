@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 import socialmedia.AccountIDNotRecognisedException;
 import socialmedia.BadSocialMedia;
 import socialmedia.HandleNotRecognisedException;
@@ -41,14 +43,26 @@ public class SocialMediaPlatformTestApp {
 		testPlatform(platform);
 
 		// Erase the platform and re-test it.
-		//platform.erasePlatform();
-		//testPlatform(platform);
+		platform.erasePlatform();
+		testPlatform(platform);
 
 		// Save the platform, erase the current platform, load the new platform and test
 		// it again.
-		// platform.savePlatform("test_platform");
-		// platform.erasePlatform();
-		// platform.loadPlatform("test_platform");
+		try{
+			platform.savePlatform("test_platform");
+			platform.erasePlatform();
+		} catch (IOException e) {
+			new IOException("error saving platform");
+		}
+
+		try{
+			platform.loadPlatform("test_platform");
+		} catch (IOException e) {
+			new IOException("error loading platform");
+		} catch (ClassNotFoundException e) {
+			new ClassNotFoundException("class not found when trying to load platform.");
+		}
+		
 
 	}
 
