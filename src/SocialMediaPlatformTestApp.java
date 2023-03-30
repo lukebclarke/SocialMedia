@@ -551,6 +551,50 @@ public class SocialMediaPlatformTestApp {
 			new AccountIDNotRecognisedException("The account id input does not exist in the system");
 		}
 
+		//Creates a handle of length 0 chars 
+		try {
+			Integer accountID = platform.createAccount("");
+		} catch (IllegalHandleException e) {
+			assert (false) : "Illegal handle exception thrown incorrectly";
+		} catch (InvalidHandleException e) {
+			assert (true);
+		}
+
+		//Creates a handle of length 31 chars (too long)
+		try {
+			Integer accountID = platform.createAccount("abcdefghijklmnopqrstuvwxyz12345");
+		} catch (IllegalHandleException e) {
+			assert (false) : "Illegal handle exception thrown incorrectly";
+		} catch (InvalidHandleException e) {
+			assert (true);
+		}
+
+		//Creates 2 accounts with the same handle
+		try {
+			Integer accountID1 = platform.createAccount("testAccount");
+			Integer accountID2 = platform.createAccount("testAccount");
+		} catch (IllegalHandleException e) {
+			assert (true);
+		} catch (InvalidHandleException e) {
+			assert (false) : "Invalid handle exception thrown incorrectly";
+		}
+
+		//Tests showing account
+		try {
+			Integer testAccountID = platform.createAccount("showingAccount");
+			String accountDetails = platform.showAccount("showingAccount");
+
+			assert (accountDetails.equals("ID: " + testAccountID + " \nHandle: showingAccount \nDescription:  \nPost Count: 0 \nEndorse Count: 0"));
+		} catch (HandleNotRecognisedException e) {
+			assert (false) : "Handle not recognised exception thrown incorrectly";
+		}
+		catch (IllegalHandleException e) {
+			assert (false) : "Illegal handle exception thrown incorrectly";
+		}
+		catch (InvalidHandleException e) {
+			assert (false) : "Invalid handle exception thrown incorrectly";
+		}
+
 		//Setup tests for loaded platform
 		try {
 			platform.erasePlatform();
@@ -597,4 +641,7 @@ public class SocialMediaPlatformTestApp {
 		assert (platform.getTotalCommentPosts()) == 5 : "Number of comments in the platform does not match";
 	}
 
+	
+
+	
 }
