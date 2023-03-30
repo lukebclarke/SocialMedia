@@ -46,9 +46,9 @@ public class SocialMediaPlatformTestApp {
 
 		// Save the platform, erase the current platform, load the new platform and test
 		// it again.
-		// platform.savePlatform("test_platform");
-		// platform.erasePlatform();
-		// platform.loadPlatform("test_platform");
+		//platform.savePlatform("test_platform");
+		//platform.erasePlatform();
+		//platform.loadPlatform("test_platform");
 
 	}
 
