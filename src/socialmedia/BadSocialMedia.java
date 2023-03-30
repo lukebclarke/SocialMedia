@@ -19,13 +19,13 @@ import java.util.Arrays;
  * @version 1.0
  */
 public class BadSocialMedia implements SocialMediaPlatform {
-	public ArrayList<Post> arrOfPosts  = new ArrayList<Post>(0);
-	public ArrayList<EndorsedPost> arrOfEndorsedPosts = new ArrayList<EndorsedPost>(0);
-	public ArrayList<Comment> arrOfComments = new ArrayList<Comment>(0);
-	public ArrayList<Post> arrOfEmptyPosts = new ArrayList<Post>(0);
+	private ArrayList<Post> arrOfPosts  = new ArrayList<Post>(0);
+	private ArrayList<EndorsedPost> arrOfEndorsedPosts = new ArrayList<EndorsedPost>(0);
+	private ArrayList<Comment> arrOfComments = new ArrayList<Comment>(0);
+	private ArrayList<Post> arrOfEmptyPosts = new ArrayList<Post>(0);
 
-	public ArrayList<Account> arrOfActiveAccounts = new ArrayList<Account>(0);
-	public ArrayList<Account> arrOfDeactivatedAccounts = new ArrayList<Account>(0);
+	private ArrayList<Account> arrOfActiveAccounts = new ArrayList<Account>(0);
+	private ArrayList<Account> arrOfDeactivatedAccounts = new ArrayList<Account>(0);
 	// TODO: deleting a comment/endorsed post may not work
 	// To fix this, i think i can just change the type of the variable on variable
 	// asignment in each for loop?
@@ -779,12 +779,14 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public void savePlatform(String filename) throws IOException {
-		try{
-			FileOutputStream fos = new FileOutputStream(filename);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))){
+			oos.writeObject(this.arrOfPosts);
+			oos.writeObject(this.arrOfEndorsedPosts);
+			oos.writeObject(this.arrOfComments);
+			oos.writeObject(this.arrOfEmptyPosts);
 
-			oos.writeObject(this);
-			oos.close();
+			oos.writeObject(this.arrOfActiveAccounts);
+			oos.writeObject(this.arrOfDeactivatedAccounts);
 
 		} catch (IOException e) {
 			new IOException("Error when saving platform.");
@@ -793,52 +795,22 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public void loadPlatform(String filename) throws IOException, ClassNotFoundException {
-		try {
-			FileInputStream fis = new FileInputStream(filename);
-			ObjectInputStream in = new ObjectInputStream(fis);
-			BadSocialMedia newPlatform = (BadSocialMedia) in.readObject();
-			in.close();
-			fis.close();
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
 
 			//Update the fields of the current object
-			System.out.println("Comments: ");
-			System.out.println(newPlatform.getArrOfComments());
-			this.arrOfPosts = newPlatform.getArrOfPosts();
-			this.arrOfEndorsedPosts = newPlatform.getArrOfEndorsedPosts();
-			this.arrOfComments = newPlatform.getArrOfComments();
-			this.arrOfEmptyPosts = newPlatform.getArrOfEmptyPosts();
+			this.arrOfPosts = (ArrayList<Post>) ois.readObject();
+			this.arrOfEndorsedPosts = (ArrayList<EndorsedPost>) ois.readObject();
+			this.arrOfComments = (ArrayList<Comment>) ois.readObject();
+			this.arrOfEmptyPosts = (ArrayList<Post>) ois.readObject();
 
-			this.arrOfActiveAccounts = newPlatform.getArrOfActiveAccounts();
-			this.arrOfDeactivatedAccounts = newPlatform.getArrOfDeactivatedAccounts();
+			this.arrOfActiveAccounts = (ArrayList<Account>) ois.readObject();
+			this.arrOfDeactivatedAccounts = (ArrayList<Account>) ois.readObject();
 
 		} catch (IOException e) {
-			new IOException("Error when loading platform.");
+			new IOException("Error when loading platform.", e);
 		} catch (ClassNotFoundException e) {
-			new ClassNotFoundException("Error when loading platform.");
+			new ClassNotFoundException("Error when loading platform.", e);
 		}
 	}
 	
-	public ArrayList<Post> getArrOfPosts() {
-		return this.arrOfPosts;
-	}
-	
-	public ArrayList<EndorsedPost> getArrOfEndorsedPosts() {
-		return this.arrOfEndorsedPosts;
-	}
-	
-	public ArrayList<Comment> getArrOfComments() {
-		return this.arrOfComments;
-	}
-	
-	public ArrayList<Post> getArrOfEmptyPosts() {
-		return this.arrOfEmptyPosts;
-	}
-	
-	public ArrayList<Account> getArrOfActiveAccounts() {
-		return this.arrOfActiveAccounts;
-	}
-
-	public ArrayList<Account> getArrOfDeactivatedAccounts() {
-		return this.arrOfDeactivatedAccounts;
-	}
 }
