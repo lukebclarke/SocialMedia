@@ -19,9 +19,6 @@ public class SocialMedia implements SocialMediaPlatform {
 
 	private ArrayList<Account> arrOfActiveAccounts = new ArrayList<Account>(0);
 	private ArrayList<Account> arrOfDeactivatedAccounts = new ArrayList<Account>(0);
-
-	// TODO: currently accounts can endorse their own post but I don't think it says anywhere that they shouldn't be able to?
-	//TODO: a single account can endorse a post more than once? but it doesnt say anywhere that you shouldnt be able to?
 	
 	@Override
 	public int createAccount(String handle) throws IllegalHandleException, InvalidHandleException {
