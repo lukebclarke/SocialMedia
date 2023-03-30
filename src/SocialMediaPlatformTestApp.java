@@ -590,6 +590,41 @@ public class SocialMediaPlatformTestApp {
 			assert (false) : "InvalidHandleException thrown incorrectly";
 		}
 
+		// Check that endorsed posts are removed correctly from an account when an account is deleted.
+		try {
+			platform.erasePlatform();
+			Integer accID = platform.createAccount("aHandleToTest");
+			assert (platform.getNumberOfAccounts() == 1) : "number of accounts in the system does not match";
+
+			Integer postID = platform.createPost("aHandleToTest", "none");
+			assert (platform.getTotalOriginalPosts() == 1) : "number of original posts in the system does not match";
+
+			Integer epID1 = platform.endorsePost("aHandleToTest", postID);
+			Integer epID2 = platform.endorsePost("aHandleToTest", postID);
+			assert (platform.getTotalEndorsmentPosts() == 2) : "number of endorsement posts in the system does not match";
+
+			platform.deletePost(epID1);
+			assert (platform.getTotalEndorsmentPosts() == 1) : "number of endorsement posts in the system does not match";
+
+			platform.removeAccount("aHandleToTest");
+			assert (platform.getNumberOfAccounts() == 0) : "number of accounts in the system does not match";
+			assert (platform.getTotalOriginalPosts() == 0) : "number of original posts in the system does not match";
+			assert (platform.getTotalEndorsmentPosts() == 0) : "number of endorsement posts in the system does not match";
+
+		}  catch (HandleNotRecognisedException e) {
+			assert (false) : "HandleNotRecognisedException thrown incorrectly";
+		} catch (InvalidPostException e) {
+			assert (false) : "InvalidPostException thrown incorrectly";
+		} catch (PostIDNotRecognisedException e) {
+			assert (false) : "PostIDNotRecognisedException thrown incorrectly";
+		} catch (NotActionablePostException e) {
+			assert (false) : "NotActionablePostException thrown incorrectly";
+		} catch (IllegalHandleException e) {
+			assert (false) : "IllegalHandleException thrown incorrectly";
+		} catch (InvalidHandleException e) {
+			assert (false) : "InvalidHandleException thrown incorrectly";
+		}
+
 		//Setup tests for loaded platform
 		// No exceptions should be thrown.
 		try {
@@ -631,6 +666,7 @@ public class SocialMediaPlatformTestApp {
 		} catch (InvalidHandleException e) {
 			assert (false) : "InvalidHandleException thrown incorrectly";
 		}
+
 	}
 	
 	private static void testLoadedPlatform(SocialMediaPlatform platform) {
@@ -640,7 +676,7 @@ public class SocialMediaPlatformTestApp {
 		assert (platform.getTotalCommentPosts()) == 5 : "Number of comments in the platform does not match";
 		assert (platform.getTotalEndorsmentPosts()) == 0 : "Number of endorsement posts in the platform does not match";
 
-		
+
 	}
 
 }
