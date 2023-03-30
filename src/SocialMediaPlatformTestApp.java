@@ -46,6 +46,7 @@ public class SocialMediaPlatformTestApp {
 		platform.erasePlatform();
 		testPlatform(platform);
 
+		
 		// Save the platform, erase the current platform, load the new platform and test
 		// it again.
 		try{
@@ -65,11 +66,27 @@ public class SocialMediaPlatformTestApp {
 		}
 		
 
+		//Save the current platform, load the new platform then test it.
+		try{
+			platform.savePlatform("test_platform.ser");
+		} catch (IOException e) {
+			new IOException("error saving platform");
+		}
+
+		try{
+			platform.loadPlatform("test_platform.ser");
+			testLoadedPlatform(platform);
+		} catch (IOException e) {
+			new IOException("error loading platform");
+		} catch (ClassNotFoundException e) {
+			new ClassNotFoundException("class not found when trying to load platform.");
+		}
+
 	}
 
 	private static void testPlatform(SocialMediaPlatform platform) {
-		Integer id;
 		try {
+			Integer id;
 			id = platform.createAccount("my_handle");
 			assert (platform.getNumberOfAccounts() == 1) : "number of accounts registered in the system does not match";
 
@@ -85,8 +102,8 @@ public class SocialMediaPlatformTestApp {
 		}
 
 		// Create a post then delete the post
-		Integer postID2;
 		try {
+			Integer postID2;
 			Integer accountID = platform.createAccount("my_handle");
 			assert (platform.getNumberOfAccounts() == 1) : "number of accounts registered in the system does not match";
 
@@ -115,6 +132,7 @@ public class SocialMediaPlatformTestApp {
 
 		// // Create a new account to use in future tests
 		try {
+			Integer id;
 			id = platform.createAccount("my_handle");
 			assert (platform.getNumberOfAccounts() == 1) : "number of accounts registered in the system does not match";
 

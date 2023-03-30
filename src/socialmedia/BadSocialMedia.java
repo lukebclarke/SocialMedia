@@ -84,7 +84,6 @@ public class BadSocialMedia implements SocialMediaPlatform {
 				}
 
 				//Delete all endorsed posts for a given account
-				//TODO: add this as a test in the test function
 				for (EndorsedPost endorsedPost : account.getEndorsedPosts()) {
 					arrOfEndorsedPosts.remove(endorsedPost);
 					endorsedPost.setEmptyPost();
@@ -173,7 +172,6 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	 *                              to 100 characters
 	 */
 	private boolean isMessageOfCorrectLength(String message) throws InvalidPostException {
-		// TODO: never returns false.
 		if (message.length() > 100) {
 			throw new InvalidPostException("Post message contains: " + message.length()
 					+ " characters. Message can only contain up to 100 characters.");
@@ -213,7 +211,6 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public int createPost(String handle, String message) throws HandleNotRecognisedException, InvalidPostException {
-		// Ollie
 		boolean isMessageCorrectLength = isMessageOfCorrectLength(message);
 
 		Account author = getAccountObject(handle);
@@ -321,7 +318,6 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	@Override
 	public int endorsePost(String handle, int id)
 			throws HandleNotRecognisedException, PostIDNotRecognisedException, NotActionablePostException {
-		// (Ollie)
 		Account authorObject = getAccountObject(handle);
 
 		// Search through all posts until the post with the given ID is found
@@ -374,7 +370,6 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	@Override
 	public int commentPost(String handle, int id, String message) throws HandleNotRecognisedException,
 			PostIDNotRecognisedException, NotActionablePostException, InvalidPostException {
-		// (Ollie)
 		Account authorObject = getAccountObject(handle);
 
 		Post postObject = searchForPost(id);
@@ -415,8 +410,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 		isMessageOfCorrectLength(message);
 
 		// create post object and append to arr of posts
-		commentObject = new Comment(authorObject, postObject, message); // TODO: check this throws invalid post
-																		// exception when needed.
+		commentObject = new Comment(authorObject, postObject, message);
 		this.arrOfComments.add(commentObject);
 		authorObject.addComment(commentObject);
 
@@ -425,7 +419,6 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public void deletePost(int id) throws PostIDNotRecognisedException {
-		// (Ollie)
 		// If the post is an empty post, say it is not found
 		if (isPostEmpty(id)) {
 			throw new PostIDNotRecognisedException("The post with ID: " + id + " was not found.");
@@ -499,7 +492,6 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public String showIndividualPost(int id) throws PostIDNotRecognisedException {
-		// (Ollie)
 		// Check the id is valid, and get the post object.
 		//Initaalize variables
 		Account author = null;
@@ -564,7 +556,6 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	@Override
 	public StringBuilder showPostChildrenDetails(int id)
 			throws PostIDNotRecognisedException, NotActionablePostException {
-		// (Ollie)
 		// Search through all posts until the post with the given ID is found
 		Post postObject = searchForPost(id);
 
@@ -650,7 +641,6 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public int getTotalOriginalPosts() {
-		// (Ollie)
 		Integer numPosts = 0;
 		for (Post post : arrOfPosts) {
 			if (!post.isEmptyPost()) {
@@ -663,7 +653,6 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public int getTotalEndorsmentPosts() {
-		// (Ollie)
 		Integer numPosts = 0;
 		for (Post post : arrOfEndorsedPosts) {
 			if (!post.isEmptyPost()) {
@@ -676,7 +665,6 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public int getTotalCommentPosts() {
-		// (Ollie)
 		Integer numPosts = 0;
 		for (Post post : arrOfComments) {
 			if (!post.isEmptyPost()) {
@@ -689,9 +677,6 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public int getMostEndorsedPost() {
-		// (Ollie)
-		// TODO: will cause an error if no posts are present when this function is
-		// called
 		int greatestNumberOfEndorsements = -1;
 		int postID = -1;
 		// Search through all posts and find the most endorsed post
