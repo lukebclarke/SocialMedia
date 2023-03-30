@@ -5,6 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "java",
+            "name": "SocialMediaPlatformTestApp",
+            "request": "launch",
+            "mainClass": "SocialMediaPlatformTestApp",
+            "projectName": "SocialMedia_7e44ab84"
+        },
+        {
             "name": "Java",
             "type": "java",
             "request": "launch",

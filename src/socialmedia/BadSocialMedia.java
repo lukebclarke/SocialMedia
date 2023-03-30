@@ -820,8 +820,6 @@ public class BadSocialMedia implements SocialMediaPlatform {
 		BufferedReader reader = new BufferedReader(new FileReader(filename));
     	String line;
 
-		ArrayList<String> categories = new ArrayList<>(Arrays.asList("Account", "Post", "Comment", "EndorsedPost"));
-		
 		while ((line = reader.readLine()) != "END") {
 			if ((line = reader.readLine()).equals("Account")) //for reading account details
 			{
@@ -930,5 +928,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 				}
 			}
 		}
+
+		reader.close();
 	}
 }
