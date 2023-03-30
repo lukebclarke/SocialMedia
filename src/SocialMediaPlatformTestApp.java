@@ -49,14 +49,15 @@ public class SocialMediaPlatformTestApp {
 		// Save the platform, erase the current platform, load the new platform and test
 		// it again.
 		try{
-			platform.savePlatform("test_platform");
+			platform.savePlatform("test_platform.ser");
 			platform.erasePlatform();
 		} catch (IOException e) {
 			new IOException("error saving platform");
 		}
 
 		try{
-			platform.loadPlatform("test_platform");
+			platform.loadPlatform("test_platform.ser");
+			testLoadedPlatform(platform);
 		} catch (IOException e) {
 			new IOException("error loading platform");
 		} catch (ClassNotFoundException e) {
@@ -439,7 +440,6 @@ public class SocialMediaPlatformTestApp {
 
 			//System.out.println(platform.showPostChildrenDetails(postID1));
 
-
 		} catch (HandleNotRecognisedException e) {
 			assert (false) : "HandleNotRecognisedException thrown incorrectly";
 		} catch (InvalidPostException e) {
@@ -454,8 +454,6 @@ public class SocialMediaPlatformTestApp {
 			assert (false) : "InvalidHandleException thrown incorrectly";
 		}
 
-		
-		
 		// Create a post tree containing a post, 3 level 1 comments, each has 1 level 2
 		// comment. Endorse each post once. Delete one of the level 1 comments.
 		try {
@@ -485,18 +483,22 @@ public class SocialMediaPlatformTestApp {
 			//System.out.println(platform.showPostChildrenDetails(postID1));
 
 		} catch (HandleNotRecognisedException e) {
-		assert (false) : "HandleNotRecognisedException thrown incorrectly";
+			assert (false) : "HandleNotRecognisedException thrown incorrectly";
 		} catch (InvalidPostException e) {
-		assert (false) : "InvalidPostException thrown incorrectly";
+			assert (false) : "InvalidPostException thrown incorrectly";
 		} catch (PostIDNotRecognisedException e) {
-		assert (false) : "PostIDNotRecognisedException thrown incorrectly";
+			assert (false) : "PostIDNotRecognisedException thrown incorrectly";
 		} catch (NotActionablePostException e) {
-		assert (false) : "NotActionablePostException thrown incorrectly";
+			assert (false) : "NotActionablePostException thrown incorrectly";
 		} catch (IllegalHandleException e) {
-		assert (false) : "IllegalHandleException thrown incorrectly";
+			assert (false) : "IllegalHandleException thrown incorrectly";
 		} catch (InvalidHandleException e) {
-		assert (false) : "InvalidHandleException thrown incorrectly";
+			assert (false) : "InvalidHandleException thrown incorrectly";
 		}
+	}
+	
+	private static void testLoadedPlatform(SocialMediaPlatform platform) {
+		assert (platform.getTotalCommentPosts()) == 5 : "Number of comments in the platform does not match";
 	}
 
 }
