@@ -105,9 +105,12 @@ public class Post implements Serializable {
         postID = newPostId;
     }
 
+    public static void setNextPostId(int newNextPostId) {
+        nextPostID = newNextPostId;
+    }
+
     public void addComment(Comment commentObject) {
-         //Only set if the post is not an empty post
-         if (author != null) {
+         if (!this.isEmptyPost()) {
             arrOfComments.add(commentObject);
         }
     }
@@ -117,8 +120,7 @@ public class Post implements Serializable {
     }
 
     public void addEndorsedPost(EndorsedPost endorsedPostObject) {
-        //Only set if the post is not an empty post
-        if (author != null) {
+        if (!this.isEmptyPost()) {
             arrOfEndorsements.add(endorsedPostObject);
         }
     }

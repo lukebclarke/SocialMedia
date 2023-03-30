@@ -26,24 +26,9 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	private ArrayList<Account> arrOfActiveAccounts = new ArrayList<Account>(0);
 	private ArrayList<Account> arrOfDeactivatedAccounts = new ArrayList<Account>(0);
-	// TODO: deleting a comment/endorsed post may not work
-	// To fix this, i think i can just change the type of the variable on variable
-	// asignment in each for loop?
 
-	// TODO: the platform class shouldnt be used i think which breaks a lot of your
-	// code :( this is my fault but i will explain and we
-	// can fix it, unless it works for yours then i can probably change my code to
-	// use it maybe i was just being dumb when i made that class
-	// because i didnt realise this file was a class.
-
-	// TODO: (ollie) currently accounts can endorse their own post.
-
-	// TODO: (ollie) most things require post object to be passed as param but
-	// sometimes comment and endorsed post objects are passed instead which will
-	// probably break the code
-	
-
-	//TODO: (ollie) i currently use 'arrayOfAccounts' where i should be using 'arrayOfActiveAccounts' in all post classes
+	// TODO: currently accounts can endorse their own post but I don't think it says anywhere that they shouldn't be able to?
+	//TODO: a single account can endorse a post more than once? but it doesnt say anywhere that you shouldnt be able to?
 	
 	@Override
 	public int createAccount(String handle) throws IllegalHandleException, InvalidHandleException {
@@ -101,14 +86,9 @@ public class BadSocialMedia implements SocialMediaPlatform {
 					arrOfPosts.remove(post);
 					post.setEmptyPost();
 				}
-				
-				//TODO: What actually is an endorsed post? Is it just a normal post added to another list that tracks
-				//the specific posts a user has liked? If so, instead of setting the post to empty should I just
-				//be removing an endorsement from a post?
 
-				//An endorsed post is like a retweet. So you need to go through and set every endorsement to an empty post. 
-				//How you did it is good (with the bits i added where you remove the post from the arr too)
-
+				//Delete all endorsed posts for a given account
+				//TODO: add this as a test in the test function
 				for (EndorsedPost endorsedPost : account.getEndorsedPosts()) {
 					arrOfEndorsedPosts.remove(endorsedPost);
 					endorsedPost.setEmptyPost();
@@ -139,15 +119,7 @@ public class BadSocialMedia implements SocialMediaPlatform {
 				for (Post post : account.getPosts()) {
 					arrOfPosts.remove(post);
 					post.setEmptyPost();
-				}
-				
-				//TODO: What actually is an endorsed post? Is it just a normal post added to another list that tracks
-				//the specific posts a user has liked? If so, instead of setting the post to empty should I just
-				//be removing an endorsement from a post?
-
-				//An endorsed post is like a retweet. So you need to go through and set every endorsement to an empty post. 
-				//How you did it is good (with the bits i added where you remove the post from the arr too)
-				
+				}				
 
 				//Deletes all endorsed posts for a given account
 				for (EndorsedPost endorsedPost : account.getEndorsedPosts()) {
@@ -329,7 +301,6 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	 * @return true if the post is empty, false otherwise.
 	 */
 	private boolean isPostEmpty(int postID) {
-		// TODO: (ollie) make more readable should be called searchForEmptyPost.
 		Post postObject = searchForPost(postID);
 
 		if (postObject == null) {
@@ -386,7 +357,6 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 		// If a post with given ID is found, check that the post is not an empty post.
 		// Throw exception if the corresponding ID is to an empty post.
-		// TODO: (ollie) this isnt done in the most efficient way but should work.
 		if (isPostEmpty(id)) {
 			throw new NotActionablePostException("You cannot endorse an empty post.");
 		}
@@ -576,9 +546,6 @@ public class BadSocialMedia implements SocialMediaPlatform {
 			message = commentObject.getMessage();
 		}
 
-		// TODO: should i be checking for empty posts? Right now it will display empty
-		// posts, but i am not sure that it should.
-
 		// Throw exception if a post with the given id was not found.
 		if (postObject == null && commentObject == null && endorsedPostObject == null) {
 			throw new PostIDNotRecognisedException("The post with ID: " + id + " was not found.");
@@ -766,8 +733,6 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public void erasePlatform() {
-		// Ollie
-		//TODO: this is a terrible way of erasing the platform as all old data remains but it should work.
 		this.arrOfPosts  = new ArrayList<Post>(0);
 		this.arrOfEndorsedPosts = new ArrayList<EndorsedPost>(0);
 		this.arrOfComments = new ArrayList<Comment>(0);
@@ -775,6 +740,8 @@ public class BadSocialMedia implements SocialMediaPlatform {
 
 		this.arrOfActiveAccounts = new ArrayList<Account>(0);
 		this.arrOfDeactivatedAccounts = new ArrayList<Account>(0);
+
+		Post.setNextPostId(0);
 	}
 
 	@Override

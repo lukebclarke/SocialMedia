@@ -495,6 +495,42 @@ public class SocialMediaPlatformTestApp {
 		} catch (InvalidHandleException e) {
 			assert (false) : "InvalidHandleException thrown incorrectly";
 		}
+
+		// Create an account, create posts of that account then delete the account, the posts should be deleted too.
+		try{
+			platform.erasePlatform();
+			Integer accID = platform.createAccount("anAccount");
+			assert(platform.getNumberOfAccounts()) == 1 : "Number of accounts in the platform does not match";
+
+			Integer postID = platform.createPost("anAccount", "anAccount Post 1");
+			assert(platform.getTotalOriginalPosts()) == 1 : "Total original posts in the platform does not match";
+			Integer commentID = platform.commentPost("anAccount", postID, "anAccount Comment 1");
+			assert(platform.getTotalCommentPosts()) == 1 : "total comment posts in the platform does not match";
+			Integer epID = platform.endorsePost("anAccount", postID);
+			Integer epID2 = platform.endorsePost("anAccount", commentID);
+			assert (platform.getTotalEndorsmentPosts()) == 2 : "total endorsment posts in the platform does not match";
+
+			platform.removeAccount(accID);
+			assert(platform.getNumberOfAccounts()) == 0;
+			assert(platform.getTotalOriginalPosts()) == 0;
+			assert(platform.getTotalCommentPosts()) == 0;
+			assert(platform.getTotalEndorsmentPosts()) == 0;
+			
+		} catch (IllegalHandleException e) {
+			new IllegalHandleException("The account handle input is invalid, the handle input is already in use.");
+		} catch (InvalidHandleException e) {
+			new InvalidHandleException("the handle input is not valid, the handle must be of the correct length");
+		} catch (HandleNotRecognisedException e) {
+			new HandleNotRecognisedException("The handle input does not exist in the system.");
+		} catch (InvalidPostException e) {
+			new InvalidPostException("The post input is empty or exceeds the permitted message length");
+		} catch (PostIDNotRecognisedException e) {
+			new PostIDNotRecognisedException("The post with the given id does not exist in the system");
+		} catch (NotActionablePostException e) {
+			new NotActionablePostException("this action cannot be performed on this post.");
+		} catch (AccountIDNotRecognisedException e) {
+			new AccountIDNotRecognisedException("The account id input does not exist in the system");
+		}
 	}
 	
 	private static void testLoadedPlatform(SocialMediaPlatform platform) {
