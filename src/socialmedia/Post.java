@@ -39,7 +39,6 @@ public class Post implements Serializable {
         author.addPost(this); //Add the post to the list of posts created by the author
         this.isEmptyPost = false;
         //Increment and set the post id. (this means the id will start from 1)
-        //TODO: if the id somehow reaches 2147483648 the program will crash
         this.postID = nextPostID;
         nextPostID++;
     }
